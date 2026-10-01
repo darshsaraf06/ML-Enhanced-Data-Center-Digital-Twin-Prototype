@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML-Enhanced Data Center Digital Twin Platform</title>
+    <meta name="description" content="A Machine Learning-Enhanced Digital Twin for Predictive Thermal Management and Energy Optimization in Data Centers.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="app-body">
+
+    <!-- ═══════════════════════════════════════════════════════
+         LANDING / HOME PAGE OVERLAY
+         Shown once on load, dismissed by "Enter Platform" btn
+    ═══════════════════════════════════════════════════════ -->
+    <div id="landingOverlay" class="landing-overlay">
+
+        <!-- Animated particle canvas background -->
+        <canvas id="landingCanvas" class="landing-canvas"></canvas>
+
+        <!-- Grid lines decoration -->
+        <div class="landing-grid"></div>
+
+        <!-- Top accent bar -->
+        <div class="landing-top-bar">
+            <span class="landing-badge">RESEARCH PLATFORM · v2.0</span>
+            <span class="landing-badge-sep">|</span>
+            <span class="landing-badge">PHYSICS + ML FUSION</span>
+        </div>
+
+        <!-- Central Hero Content -->
+        <div class="landing-hero">
+
+            <!-- Animated icon / logo -->
+            <div class="landing-logo-ring">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+                <div class="landing-logo-core">
+                    <span class="landing-logo-icon">⬡</span>
+                </div>
+            </div>
+
+            <!-- Title block -->
+            <div class="landing-title-block">
+                <p class="landing-eyebrow">A Machine Learning-Enhanced</p>
+                <h1 class="landing-title">
+                    Digital Twin<br>
+                    <span class="landing-title-accent">for Data Centers</span>
+                </h1>
+                <p class="landing-tagline">
+                    Predictive Thermal Management &amp; Energy Optimization
+                    <br>
+                    <span class="landing-tagline-sub">Real-time physics simulation · Multi-horizon ML forecasting · Counterfactual intervention engine</span>
+                </p>
+            </div>
+
+            <!-- Stat pills -->
+            <div class="landing-stat-row">
+                <div class="landing-stat">
+                    <span class="stat-num">30<span class="stat-unit">+</span></span>
+                    <span class="stat-label">Simulation Parameters</span>
+                </div>
+                <div class="landing-stat-div"></div>
+                <div class="landing-stat">
+                    <span class="stat-num">6<span class="stat-unit">x</span></span>
+                    <span class="stat-label">Forecast Horizons</span>
+                </div>
+                <div class="landing-stat-div"></div>
+                <div class="landing-stat">
+                    <span class="stat-num">10</span>
+                    <span class="stat-label">Failure Scenarios</span>
+                </div>
+                <div class="landing-stat-div"></div>
+                <div class="landing-stat">
+                    <span class="stat-num">5</span>
+                    <span class="stat-label">ML Paradigms</span>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            <button id="landingEnterBtn" class="landing-enter-btn">
+                <span class="enter-btn-text">Enter Platform</span>
+                <span class="enter-btn-arrow">→</span>
+                <span class="enter-btn-glow"></span>
+            </button>
+
+            <!-- Caption -->
+            <p class="landing-caption">
+                Software-only · Simulation-based · Research-grade
+            </p>
+        </div>
+
+        <!-- Bottom tech strip -->
+        <div class="landing-bottom-strip">
+            <span>Python FastAPI</span>
+            <span class="strip-sep">·</span>
+            <span>XGBoost / Random Forest</span>
+            <span class="strip-sep">·</span>
+            <span>RC Thermal Physics</span>
+            <span class="strip-sep">·</span>
+            <span>Counterfactual Optimization</span>
+            <span class="strip-sep">·</span>
+            <span>Real-time WebSocket</span>
+            <span class="strip-sep">·</span>
+            <span>SQLite Persistence</span>
+        </div>
+
+    </div>
+    <!-- /LANDING OVERLAY -->
+
+    <!-- Persistent Global Header -->
+    <header class="app-header" id="globalHeader">
+        <div class="brand-group">
+            <button id="sidebarToggle" class="sidebar-toggle-btn" title="Toggle Navigation Sidebar">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <div class="brand-icon">DT</div>
+            <div class="brand-text">
+                <h1>ML-Enhanced Data Center Digital Twin</h1>
+                <p>Predictive Thermal Management & Energy Optimization Engine</p>
+            </div>
+        </div>
+
+        <div class="header-center-info">
+            <!-- Mode Selector -->
+            <div class="header-item">
+                <span class="item-label">MODE</span>
+                <select id="globalModeSelect" class="header-select">
+                    <option value="live">Mode 1: Live Baseline Simulation</option>
+                    <option value="lab">Mode 2: Simulation Lab (Timed)</option>
+                </select>
+            </div>
+
+            <!-- Simulation Clock -->
+            <div class="header-item clock-item">
+                <span class="item-label">SIMULATION CLOCK</span>
+                <div class="clock-display-wrap">
+                    <span id="headerSimClock" class="clock-val">00:00:00 / 01:00:00</span>
+                    <div class="mini-progress-bar">
+                        <div id="headerClockProgress" class="mini-progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulation Status -->
+            <div class="header-item">
+                <span class="item-label">STATUS</span>
+                <div id="headerStatusBadge" class="status-pill status-running">
+                    <span class="pulse-dot"></span>
+                    <span id="headerStatusText">RUNNING</span>
+                </div>
+            </div>
+
+            <!-- System Health -->
+            <div class="header-item">
+                <span class="item-label">HEALTH</span>
+                <div id="headerHealthBadge" class="health-pill health-safe">
+                    <span id="headerHealthText">SAFE</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <!-- Simulation Controls -->
+            <div class="sim-controls-btn-group">
+                <button id="btnHeaderStart" class="btn-ctrl" title="Start Simulation">▶</button>
+                <button id="btnHeaderPause" class="btn-ctrl" title="Pause Simulation">⏸</button>
+                <button id="btnHeaderResume" class="btn-ctrl" title="Resume Simulation" style="display:none;">⏵</button>
+                <button id="btnHeaderStop" class="btn-ctrl btn-ctrl-stop" title="Stop Simulation">⏹</button>
+                <button id="btnHeaderRestart" class="btn-ctrl" title="Restart Simulation">↺</button>
+            </div>
+
+            <!-- Speed controls -->
+            <div class="speed-btn-group">
+                <button class="btn-speed active" data-speed="1">1x</button>
+                <button class="btn-speed" data-speed="5">5x</button>
+                <button class="btn-speed" data-speed="15">15x</button>
+                <button class="btn-speed" data-speed="60">60x</button>
+            </div>
+
+            <!-- Light / Dark Mode Toggle -->
+            <button id="btnThemeToggle" class="btn-theme-toggle" title="Toggle Light / Dark Mode">
+                <span id="themeIcon" class="theme-icon">&#9790;</span>
+            </button>
+
+            <!-- Global Export PDF Report Button -->
+            <button id="btnGlobalExportPdf" class="btn btn-export-pdf" title="Export Detailed PDF Simulation Report">
+                EXPORT PDF REPORT
+            </button>
+        </div>
+    </header>
+
+    <!-- Hotspot Warning Alert Banner (Appears when T+15m risk > 60%) -->
+    <div id="hotspotWarningBanner" class="warning-banner" style="display: none;">
+        <div class="warning-info">
+            <span class="warning-icon">⚠️</span>
+            <div>
+                <strong>PREDICTIVE HOTSPOT WARNING DETECTED BY ML TWIN</strong>
+                <p><span id="warnRackName">Rack 07</span> predicted to reach <span id="warnTempVal" style="color:#ff1744; font-weight:bold;">34.5°C</span> in 15 mins (Risk: <span id="warnRiskVal">87%</span>). Proactive counterfactual intervention recommended.</p>
+            </div>
+        </div>
+        <div class="banner-actions">
+            <button class="btn btn-sm btn-cyan" id="btnBannerCounterfactual">Run Counterfactual Optimization</button>
+            <button class="btn btn-sm btn-outline" id="btnDismissBanner">Dismiss</button>
+        </div>
+    </div>
+
+    <!-- App Main Layout Container -->
+    <div class="app-layout">
+
+        <!-- Left-side Collapsible Navigation Menu -->
+        <aside class="app-sidebar" id="appSidebar">
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">NAVIGATION</div>
+                <button class="nav-item active" data-target="secOverview">
+                    <span class="nav-icon nav-icon-badge">OV</span>
+                    <span class="nav-text">1. Overview</span>
+                </button>
+                <button class="nav-item" data-target="secDigitalTwin">
+                    <span class="nav-icon nav-icon-badge">DT</span>
+                    <span class="nav-text">2. Digital Twin</span>
+                </button>
+                <button class="nav-item" data-target="secSimulationLab">
+                    <span class="nav-icon nav-icon-badge">SL</span>
+                    <span class="nav-text">3. Simulation Lab</span>
+                </button>
+                <button class="nav-item" data-target="secForecasting">
+                    <span class="nav-icon nav-icon-badge">FC</span>
+                    <span class="nav-text">4. Forecasting</span>
+                </button>
+                <button class="nav-item" data-target="secOptimization">
+                    <span class="nav-icon nav-icon-badge">OP</span>
+                    <span class="nav-text">5. Optimization</span>
+                </button>
+                <button class="nav-item" data-target="secScenarios">
+                    <span class="nav-icon nav-icon-badge">SC</span>
+                    <span class="nav-text">6. Scenarios</span>
+                </button>
+                <button class="nav-item" data-target="secAlerts">
+                    <span class="nav-icon nav-icon-badge">AL</span>
+                    <span class="nav-text">7. Alerts & Events</span>
+                    <span id="sidebarAlertCount" class="nav-badge" style="display:none;">0</span>
+                </button>
+                <button class="nav-item" data-target="secEnergy">
+                    <span class="nav-icon nav-icon-badge">EN</span>
+                    <span class="nav-text">8. Energy Analytics</span>
+                </button>
+                <button class="nav-item" data-target="secExperiments">
+                    <span class="nav-icon nav-icon-badge">EX</span>
+                    <span class="nav-text">9. Experiments</span>
+                </button>
+                <button class="nav-item" data-target="secReports">
+                    <span class="nav-icon nav-icon-badge">RP</span>
+                    <span class="nav-text">10. Reports</span>
+                </button>
+                <button class="nav-item" data-target="secHistory">
+                    <span class="nav-icon nav-icon-badge">HI</span>
+                    <span class="nav-text">11. History</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="conn-status-row">
+                    <span id="connStatusDot" class="conn-dot conn-dot-off"></span>
+                    <span id="connStatusLabel" class="conn-label">DISCONNECTED</span>
+                    <span id="apiLatencyBadge" class="conn-latency">- ms</span>
+                </div>
+                <div class="sidebar-engine-tag">FastAPI + Scikit-Learn + XGBoost</div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area with 10 Dedicated Pages -->
+        <main class="app-content-area" id="appContentArea">
+
+
+            <!-- Global Telemetry Ribbon (Visible on Overview & Digital Twin) -->
+            <section class="telemetry-ribbon" id="telemetryRibbon">
+                <div class="metric-card">
+                    <div class="metric-label">Total IT Power Load</div>
+                    <div id="metricItPower" class="metric-val val-cyan">0.0 kW</div>
+                    <div class="metric-sub">Compute Workload</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">CRAH Cooling Power</div>
+                    <div id="metricCoolingPower" class="metric-val val-warning">0.0 kW</div>
+                    <div class="metric-sub">Chiller + Fans</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Data Center PUE</div>
+                    <div id="metricPue" class="metric-val val-success">1.00</div>
+                    <div class="metric-sub">Total / IT Power</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Peak Core Temperature</div>
+                    <div id="metricPeakTemp" class="metric-val val-temp">0.0°C</div>
+                    <div class="metric-sub">Limit: 33.0°C</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">ML Hotspot Risk (T+15m)</div>
+                    <div id="metricHotspotRisk" class="metric-val val-success">0%</div>
+                    <div class="metric-sub">Predictive Safety</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Ambient / Wet-Bulb</div>
+                    <div id="metricAmbientInfo" class="metric-val val-ambient">24.0°C / 17.2°C</div>
+                    <div class="metric-sub">Psychrometric State</div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 1. OVERVIEW PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section active" id="secOverview">
+                <div class="section-header-row">
+                    <div>
+                        <h2>System Overview & Real-Time Telemetry</h2>
+                        <p class="section-desc">End-to-end monitoring of physical thermal dynamics, predictive ML state, and energy performance.</p>
+                    </div>
+                    <div class="section-actions">
+                        <button class="btn btn-sm btn-cyan" onclick="window.navTo('secOptimization')">Run Optimization</button>
+                        <button class="btn btn-sm btn-outline" onclick="window.navTo('secScenarios')">Inject Scenario</button>
+                    </div>
+                </div>
+
+
+                <!-- Pipeline Architecture Banner -->
+                <div class="pipeline-flow-card">
+                    <div class="pipeline-title">CORE PLATFORM ARCHITECTURE PIPELINE</div>
+                    <div class="pipeline-steps">
+                        <div class="p-step active"><span class="step-num">1</span> Telemetry</div>
+                        <div class="p-arrow">→</div>
+                        <div class="p-step active"><span class="step-num">2</span> Digital Twin</div>
+                        <div class="p-arrow">→</div>
+                        <div class="p-step active"><span class="step-num">3</span> ML Forecasting</div>
+                        <div class="p-arrow">→</div>
+                        <div class="p-step active"><span class="step-num">4</span> Risk Detection</div>
+                        <div class="p-arrow">→</div>
+                        <div class="p-step active"><span class="step-num">5</span> Optimization</div>
+                        <div class="p-arrow">→</div>
+                        <div class="p-step active"><span class="step-num">6</span> Counterfactual Sim</div>
+                        <div class="p-arrow">→</div>
+                        <div class="p-step active"><span class="step-num">7</span> Intervention</div>
+                        <div class="p-arrow">→</div>
+                        <div class="p-step active"><span class="step-num">8</span> Analytics/Report</div>
+                    </div>
+                </div>
+
+                <!-- Live Overview Grid -->
+                <div class="dashboard-grid-2col">
+                    <!-- Thermal Trajectory Chart -->
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Real-Time Hall Core Temperatures vs ASHRAE Safety Limit</h3>
+                            <span class="badge badge-cyan">Physics RC Engine</span>
+                        </div>
+                        <div class="chart-container" style="height: 260px;">
+                            <canvas id="overviewTempChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Power Breakdown Chart -->
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Power Demand & PUE Efficiency</h3>
+                            <span class="badge badge-emerald">Energy Engine</span>
+                        </div>
+                        <div class="chart-container" style="height: 260px;">
+                            <canvas id="overviewPowerChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Cards Grid -->
+                <div class="overview-status-grid">
+                    <div class="status-info-card">
+                        <div class="status-card-header">
+                            <span class="status-icon">🌤️</span>
+                            <span class="status-card-title">Weather Conditions</span>
+                        </div>
+                        <div id="ovWeatherPreset" class="status-card-val">Normal Ambient</div>
+                        <p id="ovWeatherDetails" class="status-card-desc">Ambient: 24.0°C, RH: 50%, Wet-Bulb: 17.2°C, COP Multiplier: 1.00</p>
+                    </div>
+
+                    <div class="status-info-card">
+                        <div class="status-card-header">
+                            <span class="status-icon">⚠️</span>
+                            <span class="status-card-title">Operational Stress Scenario</span>
+                        </div>
+                        <div id="ovProblemScenario" class="status-card-val">Nominal Operation</div>
+                        <p id="ovProblemDetails" class="status-card-desc">All racks operating within normal diurnal load profiles.</p>
+                    </div>
+
+                    <div class="status-info-card">
+                        <div class="status-card-header">
+                            <span class="status-icon">🔮</span>
+                            <span class="status-card-title">Active ML Model</span>
+                        </div>
+                        <div id="ovMlModel" class="status-card-val">XGBoost Regressor</div>
+                        <p id="ovMlDetails" class="status-card-desc">Multi-horizon gradient boosted trees (MAE: 0.38°C, R²: 0.988).</p>
+                    </div>
+
+                    <div class="status-info-card">
+                        <div class="status-card-header">
+                            <span class="status-icon">🌱</span>
+                            <span class="status-card-title">Energy Savings</span>
+                        </div>
+                        <div id="ovEnergySavings" class="status-card-val">18.4% Saved</div>
+                        <p id="ovEnergyDetails" class="status-card-desc">Dynamic CRAH fan throttling vs unoptimized 100% fixed cooling.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 2. DIGITAL TWIN PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secDigitalTwin">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Physics-Based Digital Twin: Data Center Bay</h2>
+                        <p class="section-desc">Interactive thermal representation of server racks, hot/cold aisles, and airflow distribution.</p>
+                    </div>
+                    <div class="section-actions">
+                        <span class="legend-item"><span class="dot dot-safe"></span> Safe (&lt;33°C)</span>
+                        <span class="legend-item"><span class="dot dot-warn"></span> Warning (33-36°C)</span>
+                        <span class="legend-item"><span class="dot dot-crit"></span> Critical (&gt;36°C)</span>
+                    </div>
+                </div>
+
+                <!-- Digital Twin Rack Grid -->
+                <div class="twin-room-container">
+                    <div class="aisle-label cold-aisle">COLD AISLE - CRAH SUPPLY AIR STREAM (18.0°C)</div>
+                    <div id="rackBayGrid" class="rack-bay-grid">
+                        <!-- Dynamic Rack Cards injected via UI renderer -->
+                    </div>
+                    <div class="aisle-label hot-aisle">HOT AISLE - EXHAUST RETURN PLENUM</div>
+                </div>
+
+                <!-- Thermal Visualizations (Heatmap, Distribution, Hotspot Map) -->
+                <div class="dashboard-grid-2col" style="margin-top: 24px;">
+                    <!-- Temperature Heatmap Grid -->
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Rack Temperature Heatmap (Spatial Core Heat)</h3>
+                            <span class="badge badge-cyan">Intensity Map</span>
+                        </div>
+                        <div id="rackHeatmapGrid" class="heatmap-grid">
+                            <!-- Heatmap cells -->
+                        </div>
+                    </div>
+
+                    <!-- Hotspot Probability Map -->
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Predictive Hotspot Map (T+15m Horizon)</h3>
+                            <span class="badge badge-warning">Risk Zones</span>
+                        </div>
+                        <div id="hotspotRiskMap" class="hotspot-risk-grid">
+                            <!-- Risk bars -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 3. SIMULATION LAB PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secSimulationLab">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Simulation Lab & Timed Execution</h2>
+                        <p class="section-desc">Configure research simulation runs with preset or custom durations, timesteps, and initial thermodynamic states.</p>
+                    </div>
+                    <div class="section-actions">
+                        <button id="btnOpenWhatIfModal" class="btn btn-sm btn-cyan">🔬 Counterfactual What-If Simulator</button>
+                    </div>
+                </div>
+
+                <!-- Main Simulation Clock & Status Banner -->
+                <div class="timed-sim-banner">
+                    <div class="sim-banner-left">
+                        <div class="banner-clock-title">SIMULATION TIME</div>
+                        <div id="simLabClockDisplay" class="banner-clock-value">00:00:00 / 01:00:00</div>
+                        <div class="banner-status-line">
+                            Status: <strong id="simLabStatusDisplay" style="color: #00e676;">RUNNING</strong> | 
+                            Speed: <strong id="simLabSpeedDisplay">1x Realtime</strong> | 
+                            Timestep: <strong id="simLabDtDisplay">1.0s</strong>
+                        </div>
+                    </div>
+                    <div class="sim-banner-controls">
+                        <button id="btnLabStart" class="btn btn-success">▶ START</button>
+                        <button id="btnLabPause" class="btn btn-warning">⏸ PAUSE</button>
+                        <button id="btnLabResume" class="btn btn-cyan" style="display:none;">⏵ RESUME</button>
+                        <button id="btnLabStop" class="btn btn-danger">⏹ STOP</button>
+                        <button id="btnLabRestart" class="btn btn-outline">↺ RESTART</button>
+                    </div>
+                </div>
+
+                <!-- Simulation Progress Bar -->
+                <div class="sim-progress-wrapper">
+                    <div class="progress-labels">
+                        <span>Progress: <span id="simLabProgressPct">0%</span></span>
+                        <span id="simLabRemainingTime">Remaining: --:--:--</span>
+                    </div>
+                    <div class="sim-progress-track">
+                        <div id="simLabProgressBar" class="sim-progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Simulation Configuration Form -->
+                <div class="panel-card" style="margin-top: 20px;">
+                    <div class="panel-header">
+                        <h3>Simulation Configuration Setup</h3>
+                        <span class="badge badge-purple">Parametric Setup</span>
+                    </div>
+                    <div class="form-grid-3col">
+                        <!-- Duration Presets -->
+                        <div class="form-group">
+                            <label class="form-label">Simulation Duration Presets</label>
+                            <select id="cfgDurationPreset" class="form-control">
+                                <option value="300">5 Minutes (300 s)</option>
+                                <option value="900">15 Minutes (900 s)</option>
+                                <option value="1800">30 Minutes (1,800 s)</option>
+                                <option value="3600" selected>1 Hour (3,600 s)</option>
+                                <option value="21600">6 Hours (21,600 s)</option>
+                                <option value="43200">12 Hours (43,200 s)</option>
+                                <option value="86400">24 Hours (86,400 s)</option>
+                                <option value="custom">Custom Duration...</option>
+                            </select>
+                        </div>
+
+                        <!-- Custom Duration input (hidden by default) -->
+                        <div class="form-group" id="groupCustomDuration" style="display:none;">
+                            <label class="form-label">Custom Duration (Minutes)</label>
+                            <input type="number" id="cfgCustomDurationMin" class="form-control" value="60" min="1" max="1440">
+                        </div>
+
+                        <!-- Simulation Timestep -->
+                        <div class="form-group">
+                            <label class="form-label">Simulation Timestep (dt)</label>
+                            <select id="cfgTimestep" class="form-control">
+                                <option value="0.5">0.5 seconds (High Precision)</option>
+                                <option value="1.0" selected>1.0 second (Standard)</option>
+                                <option value="2.0">2.0 seconds (Fast)</option>
+                                <option value="5.0">5.0 seconds (Accelerated)</option>
+                            </select>
+                        </div>
+
+                        <!-- Number of Racks -->
+                        <div class="form-group">
+                            <label class="form-label">Number of Racks</label>
+                            <select id="cfgNumRacks" class="form-control">
+                                <option value="4">4 Racks (Small Pod)</option>
+                                <option value="8" selected>8 Racks (Standard Hall A+B)</option>
+                                <option value="12">12 Racks (High-Density Bay)</option>
+                            </select>
+                        </div>
+
+                        <!-- Initial Workload -->
+                        <div class="form-group">
+                            <label class="form-label">Initial Workload: <span id="valCfgWorkload">60%</span></label>
+                            <input type="range" id="cfgWorkload" class="form-range" min="10" max="100" value="60">
+                        </div>
+
+                        <!-- Initial Ambient Temp -->
+                        <div class="form-group">
+                            <label class="form-label">Initial Ambient Temperature: <span id="valCfgAmbient">24.0°C</span></label>
+                            <input type="range" id="cfgAmbientTemp" class="form-range" min="15" max="45" step="0.5" value="24.0">
+                        </div>
+
+                        <!-- Ambient Humidity -->
+                        <div class="form-group">
+                            <label class="form-label">Ambient Humidity: <span id="valCfgHumidity">50%</span></label>
+                            <input type="range" id="cfgHumidity" class="form-range" min="10" max="95" value="50">
+                        </div>
+
+                        <!-- Cooling Setpoint -->
+                        <div class="form-group">
+                            <label class="form-label">Cooling Supply Setpoint: <span id="valCfgCooling">18.0°C</span></label>
+                            <input type="range" id="cfgCoolingSetpoint" class="form-range" min="14" max="24" step="0.5" value="18.0">
+                        </div>
+
+                        <!-- Airflow CFM -->
+                        <div class="form-group">
+                            <label class="form-label">CRAH Airflow: <span id="valCfgAirflow">8500 CFM</span></label>
+                            <input type="range" id="cfgAirflow" class="form-range" min="4000" max="12000" step="250" value="8500">
+                        </div>
+
+                        <!-- ML Forecasting Model -->
+                        <div class="form-group">
+                            <label class="form-label">ML Forecasting Model</label>
+                            <select id="cfgMlModel" class="form-control">
+                                <option value="xgboost" selected>XGBoost Gradient Boosted Trees (Recommended)</option>
+                                <option value="rf">Random Forest Regressor</option>
+                                <option value="linear">Ridge Linear Regression Baseline</option>
+                                <option value="gru_lstm">GRU / LSTM Deep Recurrent Neural Net</option>
+                            </select>
+                        </div>
+
+                        <!-- Optimization Toggle -->
+                        <div class="form-group">
+                            <label class="form-label">Counterfactual Optimization</label>
+                            <select id="cfgOptimizationEnabled" class="form-control">
+                                <option value="true" selected>Enabled (Autonomous Interventions)</option>
+                                <option value="false">Disabled (Open-Loop Monitoring)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-bar">
+                        <button id="btnApplyConfiguration" class="btn btn-primary">💾 Apply & Re-Initialize Simulation</button>
+                    </div>
+                </div>
+
+                <!-- Simulation Result Screen (Section 5) -->
+                <div id="simResultScreen" class="panel-card result-screen-card" style="display: none; margin-top: 24px;">
+                    <div class="result-header">
+                        <div>
+                            <span class="badge badge-success">COMPLETED</span>
+                            <h3>Simulation Complete - Performance Summary</h3>
+                            <p id="resSimIdText">Simulation ID: SIM-20261001-001</p>
+                        </div>
+                        <button id="btnResultExportPdf" class="btn btn-export-pdf">EXPORT DETAILED PDF REPORT</button>
+                    </div>
+
+                    <div class="result-grid-4col">
+                        <!-- Thermal -->
+                        <div class="result-box">
+                            <div class="result-box-title">🌡️ THERMAL PERFORMANCE</div>
+                            <div class="res-stat-row"><span>Average Temp:</span> <strong id="resAvgTemp">25.4°C</strong></div>
+                            <div class="res-stat-row"><span>Maximum Temp:</span> <strong id="resMaxTemp">29.8°C</strong></div>
+                            <div class="res-stat-row"><span>Minimum Temp:</span> <strong id="resMinTemp">22.8°C</strong></div>
+                            <div class="res-stat-row"><span>Thermal SLA Violations:</span> <strong id="resViolations">0</strong></div>
+                            <div class="res-stat-row"><span>Peak Hotspot Risk:</span> <strong id="resMaxRisk">14%</strong></div>
+                            <div class="res-stat-row"><span>Time Above Warning:</span> <strong id="resTimeAboveWarn">0.0 mins</strong></div>
+                        </div>
+
+                        <!-- Energy -->
+                        <div class="result-box">
+                            <div class="result-box-title">⚡ ENERGY & EFFICIENCY</div>
+                            <div class="res-stat-row"><span>Total IT Energy:</span> <strong id="resItEnergy">45.2 kWh</strong></div>
+                            <div class="res-stat-row"><span>Total Cooling Energy:</span> <strong id="resCoolingEnergy">21.8 kWh</strong></div>
+                            <div class="res-stat-row"><span>Total Facility Energy:</span> <strong id="resFacilityEnergy">67.0 kWh</strong></div>
+                            <div class="res-stat-row"><span>Peak Cooling Power:</span> <strong id="resPeakCoolingKw">28.4 kW</strong></div>
+                            <div class="res-stat-row"><span>Average PUE:</span> <strong id="resAvgPue">1.28</strong></div>
+                            <div class="res-stat-row"><span>Net Energy Saved:</span> <strong id="resEnergySaved">18.2%</strong></div>
+                        </div>
+
+                        <!-- ML -->
+                        <div class="result-box">
+                            <div class="result-box-title">🔮 ML FORECASTING</div>
+                            <div class="res-stat-row"><span>Model Used:</span> <strong id="resMlModel">XGBoost</strong></div>
+                            <div class="res-stat-row"><span>Mean Absolute Error:</span> <strong id="resMlMae">0.38°C</strong></div>
+                            <div class="res-stat-row"><span>Root Mean Sq Error:</span> <strong id="resMlRmse">0.52°C</strong></div>
+                            <div class="res-stat-row"><span>R² Determination:</span> <strong id="resMlR2">0.988</strong></div>
+                            <div class="res-stat-row"><span>Hotspot Predictions:</span> <strong id="resHotspotPreds">2</strong></div>
+                            <div class="res-stat-row"><span>False Alarms:</span> <strong id="resFalseAlarms">0</strong></div>
+                        </div>
+
+                        <!-- Optimization -->
+                        <div class="result-box">
+                            <div class="result-box-title">🔄 OPTIMIZATION & INTERVENTIONS</div>
+                            <div class="res-stat-row"><span>Interventions Triggered:</span> <strong id="resInterventionsCount">2</strong></div>
+                            <div class="res-stat-row"><span>Selected Policy:</span> <strong id="resInterventionType">Proactive Combined</strong></div>
+                            <div class="res-stat-row"><span>Violations Prevented:</span> <strong id="resViolationsPrevented">12</strong></div>
+                            <div class="res-stat-row"><span>Cooling Saved:</span> <strong id="resCoolingSavedKwh">6.4 kWh</strong></div>
+                            <div class="res-stat-row"><span>Thermal Safety:</span> <strong style="color:#00e676;">100% Guaranteed</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 4. FORECASTING PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secForecasting">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Multi-Horizon Machine Learning Forecasting</h2>
+                        <p class="section-desc">Predictive temperature forecasting (+5m to +30m) and Explainable AI feature attribution.</p>
+                    </div>
+                    <div class="section-actions">
+                        <label class="form-label" style="margin-right: 8px;">Model:</label>
+                        <select id="forecastModelSelect" class="form-control" style="width: 220px;">
+                            <option value="xgboost" selected>XGBoost Regressor</option>
+                            <option value="rf">Random Forest</option>
+                            <option value="linear">Ridge Linear Baseline</option>
+                            <option value="gru_lstm">GRU / LSTM Neural Net</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Multi-Horizon Forecast Table -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3>Multi-Horizon Rack Temperature Trajectory (+5m to +30m)</h3>
+                        <span class="badge badge-cyan">Safety Limit: 33.0°C</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="forecastTable">
+                            <thead>
+                                <tr>
+                                    <th>Rack ID / Type</th>
+                                    <th>Zone</th>
+                                    <th>Current</th>
+                                    <th>+5 min</th>
+                                    <th>+10 min</th>
+                                    <th>+15 min</th>
+                                    <th>+20 min</th>
+                                    <th>+25 min</th>
+                                    <th>+30 min</th>
+                                    <th>Hotspot Risk</th>
+                                    <th>Threshold Crossing</th>
+                                </tr>
+                            </thead>
+                            <tbody id="forecastTableBody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Model Explainability & Feature Drivers (Section 18) -->
+                <div class="dashboard-grid-2col" style="margin-top: 24px;">
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Explainable AI: Global Prediction Drivers (Feature Importance)</h3>
+                            <span class="badge badge-purple">SHAP Attribution</span>
+                        </div>
+                        <div class="feature-importance-list">
+                            <div class="fi-item">
+                                <div class="fi-label"><span>Current Temperature</span> <strong>38%</strong></div>
+                                <div class="fi-bar-track"><div class="fi-bar-fill" style="width: 38%; background:#ff1744;"></div></div>
+                            </div>
+                            <div class="fi-item">
+                                <div class="fi-label"><span>CPU Utilization</span> <strong>24%</strong></div>
+                                <div class="fi-bar-track"><div class="fi-bar-fill" style="width: 24%; background:#ffab00;"></div></div>
+                            </div>
+                            <div class="fi-item">
+                                <div class="fi-label"><span>Rack Electrical Power (kW)</span> <strong>18%</strong></div>
+                                <div class="fi-bar-track"><div class="fi-bar-fill" style="width: 18%; background:#00f2fe;"></div></div>
+                            </div>
+                            <div class="fi-item">
+                                <div class="fi-label"><span>Ambient Thermal Infiltration</span> <strong>10%</strong></div>
+                                <div class="fi-bar-track"><div class="fi-bar-fill" style="width: 10%; background:#7c4dff;"></div></div>
+                            </div>
+                            <div class="fi-item">
+                                <div class="fi-label"><span>Cooling Supply Approach</span> <strong>6%</strong></div>
+                                <div class="fi-bar-track"><div class="fi-bar-fill" style="width: 6%; background:#00e676;"></div></div>
+                            </div>
+                            <div class="fi-item">
+                                <div class="fi-label"><span>Internal Fan Airflow Speed</span> <strong>4%</strong></div>
+                                <div class="fi-bar-track"><div class="fi-bar-fill" style="width: 4%; background:#8a99ad;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Rack Hotspot Prediction Inspector</h3>
+                            <span class="badge badge-cyan">Inspect Attribution</span>
+                        </div>
+                        <div class="inspector-controls">
+                            <label class="form-label">Select Rack to Inspect:</label>
+                            <select id="inspectRackSelect" class="form-control" style="width: 100%; margin-bottom: 12px;">
+                                <option value="1">Rack 01 [Web Servers]</option>
+                                <option value="2">Rack 02 [PostgreSQL DB]</option>
+                                <option value="5">Rack 05 [GPU H100 Node A]</option>
+                                <option value="6">Rack 06 [GPU H100 Node B]</option>
+                                <option value="7" selected>Rack 07 [LLM Inference]</option>
+                            </select>
+                        </div>
+                        <div id="inspectorDetailsBox" class="inspector-details">
+                            <!-- Dynamic inspection details -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 5. OPTIMIZATION PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secOptimization">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Counterfactual Decision & Multi-Objective Optimization</h2>
+                        <p class="section-desc">Parallel forward simulation of candidate cooling and workload interventions inside cloned Digital Twin models.</p>
+                    </div>
+                    <div class="section-actions">
+                        <button id="btnRunOptimizerManual" class="btn btn-cyan">⚡ Evaluate Candidate Interventions</button>
+                    </div>
+                </div>
+
+                <!-- Research Counterfactual Branching Visualizer (Section 13) -->
+                <div class="counterfactual-tree-card">
+                    <div class="tree-header">COUNTERFACTUAL BRANCHING DECISION FLOW</div>
+                    <div class="tree-diagram">
+                        <div class="tree-node root-node">
+                            <span class="node-badge">TRIGGER</span>
+                            <strong>PREDICTED HOTSPOT</strong>
+                            <small id="treeTriggerDesc">Rack 07 &gt; 33°C in 15m</small>
+                        </div>
+                        <div class="tree-arrow-down">↓ Generate Candidate Interventions</div>
+                        <div class="tree-branches-row">
+                            <div class="tree-branch-item">
+                                <div class="branch-card" id="branchCard-status_quo">
+                                    <span class="branch-tag">Action A</span>
+                                    <strong>Status Quo</strong>
+                                    <div class="branch-metric">Peak: <span class="b-temp">34.2°C</span></div>
+                                    <div class="branch-status unsafe">UNSAFE (BREACH)</div>
+                                </div>
+                            </div>
+                            <div class="tree-branch-item">
+                                <div class="branch-card" id="branchCard-airflow_boost">
+                                    <span class="branch-tag">Action B</span>
+                                    <strong>CRAH Fan Boost</strong>
+                                    <div class="branch-metric">Peak: <span class="b-temp">29.8°C</span></div>
+                                    <div class="branch-status safe">SAFE (Higher kWh)</div>
+                                </div>
+                            </div>
+                            <div class="tree-branch-item">
+                                <div class="branch-card" id="branchCard-chiller_setpoint">
+                                    <span class="branch-tag">Action C</span>
+                                    <strong>Lower Setpoint</strong>
+                                    <div class="branch-metric">Peak: <span class="b-temp">28.6°C</span></div>
+                                    <div class="branch-status safe">SAFE (Chiller Lift)</div>
+                                </div>
+                            </div>
+                            <div class="tree-branch-item">
+                                <div class="branch-card" id="branchCard-workload_migration">
+                                    <span class="branch-tag">Action D</span>
+                                    <strong>Load Migration</strong>
+                                    <div class="branch-metric">Peak: <span class="b-temp">30.1°C</span></div>
+                                    <div class="branch-status safe">SAFE (Low Energy)</div>
+                                </div>
+                            </div>
+                            <div class="tree-branch-item">
+                                <div class="branch-card recommended" id="branchCard-proactive_combined">
+                                    <span class="branch-tag">Action E</span>
+                                    <strong>Proactive Combined</strong>
+                                    <div class="branch-metric">Peak: <span class="b-temp">29.2°C</span></div>
+                                    <div class="branch-status recommended">RECOMMENDED</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Candidate Interventions Evaluation Table -->
+                <div class="panel-card" style="margin-top: 24px;">
+                    <div class="panel-header">
+                        <h3>Simulated Candidate Interventions (Cloned Twin Outcomes)</h3>
+                        <span class="badge badge-emerald">Prioritized by Safety + Efficiency</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="optCandidateTable">
+                            <thead>
+                                <tr>
+                                    <th>Action Title</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Simulated Peak Temp</th>
+                                    <th>Cooling Energy (kWh)</th>
+                                    <th>Thermal Safe?</th>
+                                    <th>Cost Score</th>
+                                    <th>Status / Recommendation</th>
+                                    <th>Enact</th>
+                                </tr>
+                            </thead>
+                            <tbody id="optCandidateTableBody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recommended Action Highlight Card -->
+                <div class="recommended-action-card" id="recommendedActionCard">
+                    <div class="rec-card-badge">RECOMMENDED COUNTERFACTUAL INTERVENTION</div>
+                    <h3 id="recActionTitle">Action E: Proactive Combined Intervention</h3>
+                    <p id="recActionDesc">Dynamic workload migration of 18% CPU/GPU tasks + targeted CRAH fan trim + 0.8°C supply setpoint adjustment.</p>
+                    <div class="rec-metrics-row">
+                        <div class="rec-metric-item">
+                            <span>Predicted Peak Temp</span>
+                            <strong id="recPeakTemp">29.2°C</strong>
+                        </div>
+                        <div class="rec-metric-item">
+                            <span>Cooling Energy</span>
+                            <strong id="recEnergy">31.4 kWh</strong>
+                        </div>
+                        <div class="rec-metric-item">
+                            <span>Energy Saved vs Status Quo</span>
+                            <strong id="recSavedPct" style="color:#00e676;">21.1%</strong>
+                        </div>
+                        <div class="rec-metric-item">
+                            <span>Thermal Safety</span>
+                            <strong style="color:#00e676;">GUARANTEED SAFE</strong>
+                        </div>
+                    </div>
+                    <div class="rec-actions-bar">
+                        <button id="btnApplyRecommendedAction" class="btn btn-success">✅ Enact Recommended Intervention Now</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 6. SCENARIOS PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secScenarios">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Operational Problem & Weather Scenarios</h2>
+                        <p class="section-desc">Inject meteorological weather conditions, failure events, and compound multi-stress scenarios.</p>
+                    </div>
+                </div>
+
+                <!-- Weather Conditions Section (Mode 3) -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3>Environmental & Weather Conditions (Psychrometric Impact)</h3>
+                        <span class="badge badge-cyan">Thermodynamic COP Impact</span>
+                    </div>
+                    <div class="weather-presets-grid" id="weatherPresetsGrid">
+                        <!-- Dynamic Weather Cards -->
+                    </div>
+
+                    <!-- Custom Weather Inputs -->
+                    <div class="custom-weather-box" style="margin-top: 16px;">
+                        <h4>Custom Ambient Conditions</h4>
+                        <div class="custom-weather-controls">
+                            <div class="form-group">
+                                <label class="form-label">Ambient Dry-Bulb Temp: <span id="valCustomAmbient">30.0°C</span></label>
+                                <input type="range" id="sliderCustomAmbient" class="form-range" min="10" max="50" step="0.5" value="30.0">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Relative Humidity: <span id="valCustomHumidity">65%</span></label>
+                                <input type="range" id="sliderCustomHumidity" class="form-range" min="10" max="98" value="65">
+                            </div>
+                            <button id="btnApplyCustomWeather" class="btn btn-sm btn-cyan">Apply Custom Weather</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Failure / Problem Scenarios Section (Mode 4 - 10 Failure Scenarios) -->
+                <div class="panel-card" style="margin-top: 24px;">
+                    <div class="panel-header">
+                        <h3>10 Predefined Failure & Stress Scenarios</h3>
+                        <span class="badge badge-warning">Failure Scenarios</span>
+                    </div>
+                    <div class="scenarios-grid" id="problemScenariosGrid">
+                        <!-- Dynamic 10 Scenario Cards -->
+                    </div>
+                </div>
+
+                <!-- Scenario Combination (Section 8) -->
+                <div class="panel-card" style="margin-top: 24px;">
+                    <div class="panel-header">
+                        <h3>Scenario Combination Stress-Tester (Compound Multi-Fault Testing)</h3>
+                        <span class="badge badge-plasma">Compound Stress</span>
+                    </div>
+                    <div class="combine-form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Select Weather Condition:</label>
+                            <select id="combineWeatherSelect" class="form-control">
+                                <option value="normal">Normal Ambient (24°C, 50% RH)</option>
+                                <option value="hot">Hot Weather (35°C, 70% RH)</option>
+                                <option value="extreme_heat" selected>Extreme Heatwave (42°C, 80% RH)</option>
+                                <option value="cool">Cool Weather (15°C, 45% RH)</option>
+                                <option value="high_humidity">High Humidity (27°C, 90% RH)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Select Failure Problem:</label>
+                            <select id="combineProblemSelect" class="form-control">
+                                <option value="none">Nominal (No Failure)</option>
+                                <option value="ai_workload_spike">AI Workload Spike (Zone B)</option>
+                                <option value="gpu_training_burst">GPU Training Burst</option>
+                                <option value="cooling_failure" selected>Cooling Failure (Chiller Trip)</option>
+                                <option value="fan_degradation">Fan Degradation (-45% Airflow)</option>
+                                <option value="airflow_blockage">Airflow Blockage (Containment Breach)</option>
+                                <option value="high_ambient_temp">High Ambient Temperature</option>
+                                <option value="rack_overload">Rack Overload (Runaway Process)</option>
+                                <option value="workload_imbalance">Workload Imbalance</option>
+                                <option value="multiple_rack_hotspot">Multiple Rack Hotspot</option>
+                                <option value="hardware_degradation">Hardware Thermal Aging</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Select Workload Profile:</label>
+                            <select id="combineWorkloadSelect" class="form-control">
+                                <option value="baseline">Standard Mixed Telemetry</option>
+                                <option value="ai_burst" selected>Heavy AI / Deep Learning Burst</option>
+                                <option value="balanced">Optimally Distributed Load</option>
+                                <option value="idle_night">Off-Peak Night Load</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="combine-actions-bar">
+                        <button id="btnActivateCompoundScenario" class="btn btn-danger">⚡ ACTIVATE COMBINED STRESS TEST</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 7. ALERTS & EVENTS PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secAlerts">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Real-Time Alerts & Chronological Event Log</h2>
+                        <p class="section-desc">Audit trail of thermal threshold breaches, early ML warnings, equipment faults, and automated interventions.</p>
+                    </div>
+                    <div class="section-actions">
+                        <div class="filter-btn-group">
+                            <button class="btn-filter active" data-sev="ALL">All Events</button>
+                            <button class="btn-filter" data-sev="CRITICAL">Critical</button>
+                            <button class="btn-filter" data-sev="WARNING">Warning</button>
+                            <button class="btn-filter" data-sev="INFO">Info</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Stats Bar -->
+                <div class="alert-stats-ribbon">
+                    <div class="alert-stat-card">
+                        <div class="alert-stat-num" id="statTotalAlerts">0</div>
+                        <div class="alert-stat-label">Total Events Logged</div>
+                    </div>
+                    <div class="alert-stat-card stat-critical">
+                        <div class="alert-stat-num" id="statCritAlerts" style="color:#ff1744;">0</div>
+                        <div class="alert-stat-label">Critical Alarms</div>
+                    </div>
+                    <div class="alert-stat-card stat-warning">
+                        <div class="alert-stat-num" id="statWarnAlerts" style="color:#ffab00;">0</div>
+                        <div class="alert-stat-label">Warnings</div>
+                    </div>
+                    <div class="alert-stat-card stat-info">
+                        <div class="alert-stat-num" id="statInfoAlerts" style="color:#00f2fe;">0</div>
+                        <div class="alert-stat-label">Informational</div>
+                    </div>
+                </div>
+
+                <!-- Event History Table (Section 15) -->
+                <div class="panel-card" style="margin-top: 20px;">
+                    <div class="panel-header">
+                        <h3>Chronological Event History</h3>
+                        <span class="badge badge-cyan">Real-Time Event Stream</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="alertsTable">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Simulation Time</th>
+                                    <th>Rack ID</th>
+                                    <th>Severity</th>
+                                    <th>Event Type</th>
+                                    <th>Description</th>
+                                    <th>Action Taken</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alertsTableBody">
+                                <!-- Dynamic alert rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 8. ENERGY ANALYTICS PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secEnergy">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Energy Analytics & Sustainability Footprint</h2>
+                        <p class="section-desc">Comprehensive tracking of IT electricity, cooling power, PUE metrics, operational costs, and carbon offsets.</p>
+                    </div>
+                </div>
+
+                <!-- Energy Stats Ribbon -->
+                <div class="energy-stats-ribbon">
+                    <div class="metric-card">
+                        <div class="metric-label">Cumulative IT Energy</div>
+                        <div id="enItEnergyKwh" class="metric-val val-cyan">0.00 kWh</div>
+                        <div class="metric-sub" id="enItCost">$0.00 Cost</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Cumulative Cooling Energy</div>
+                        <div id="enCoolingEnergyKwh" class="metric-val val-warning">0.00 kWh</div>
+                        <div class="metric-sub" id="enCoolingCost">$0.00 Cost</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total Facility Energy</div>
+                        <div id="enTotalEnergyKwh" class="metric-val">0.00 kWh</div>
+                        <div class="metric-sub" id="enTotalCost">$0.00 Total</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Average PUE</div>
+                        <div id="enAvgPue" class="metric-val val-success">1.00</div>
+                        <div class="metric-sub">Target: &lt; 1.30</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Energy Saved vs Baseline</div>
+                        <div id="enEnergySavedKwh" class="metric-val val-success">0.00 kWh</div>
+                        <div class="metric-sub" id="enSavingPct">0.0% Reduction</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Carbon Abated</div>
+                        <div id="enCarbonSavedKg" class="metric-val val-success">0.0 kg</div>
+                        <div class="metric-sub">0.385 kg CO2e / kWh</div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="dashboard-grid-2col" style="margin-top: 24px;">
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Electricity Demand Timeline (kW)</h3>
+                            <span class="badge badge-cyan">IT vs Cooling</span>
+                        </div>
+                        <div class="chart-container" style="height: 280px;">
+                            <canvas id="energyPowerChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>PUE Efficiency Trend</h3>
+                            <span class="badge badge-emerald">ASHRAE Benchmark</span>
+                        </div>
+                        <div class="chart-container" style="height: 280px;">
+                            <canvas id="energyPueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 9. EXPERIMENTS PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secExperiments">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Research Experiments & Ablation Benchmarking</h2>
+                        <p class="section-desc">Formal comparative evaluation across the 5 control paradigms (Physics-Only, ML-Only, Hybrid, Heuristic, Full Counterfactual).</p>
+                    </div>
+                    <div class="section-actions">
+                        <a href="/api/experiments/export/csv" class="btn btn-sm btn-cyan" download>📥 Download Benchmark CSV</a>
+                        <a href="/api/experiments/export/json" class="btn btn-sm btn-outline" download>📥 Download Benchmark JSON</a>
+                    </div>
+                </div>
+
+                <!-- 5-Paradigm Comparative Table (Section 17) -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3>Comparative Paradigm Benchmark Table</h3>
+                        <span class="badge badge-purple">Research Evaluation</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="experimentsTable">
+                            <thead>
+                                <tr>
+                                    <th>Paradigm</th>
+                                    <th>Description</th>
+                                    <th>MAE (°C)</th>
+                                    <th>RMSE (°C)</th>
+                                    <th>R² Score</th>
+                                    <th>Thermal SLA Violations</th>
+                                    <th>Total Energy (kWh)</th>
+                                    <th>Peak Core Temp</th>
+                                    <th>Interventions</th>
+                                    <th>Energy Savings (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="experimentsTableBody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Ablation Visualization Charts -->
+                <div class="dashboard-grid-2col" style="margin-top: 24px;">
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Predictive Accuracy Comparison (MAE & RMSE)</h3>
+                            <span class="badge badge-cyan">Lower is Better</span>
+                        </div>
+                        <div class="chart-container" style="height: 260px;">
+                            <canvas id="expAccuracyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h3>Energy Consumption & Savings Comparison</h3>
+                            <span class="badge badge-emerald">Efficiency Benchmark</span>
+                        </div>
+                        <div class="chart-container" style="height: 260px;">
+                            <canvas id="expEnergyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 10. REPORTS PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secReports">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Simulation Engineering Reports</h2>
+                        <p class="section-desc">Generate, preview, and export research-grade PDF technical reports for the completed simulation.</p>
+                    </div>
+                    <div class="section-actions">
+                        <a href="/api/report/pdf" id="btnPageExportPdf" class="btn btn-export-pdf" download>
+                            EXPORT DETAILED PDF REPORT
+                        </a>
+                    </div>
+                </div>
+
+                <!-- In-Browser Report Viewer -->
+                <div class="panel-card report-preview-card">
+                    <div class="report-cover-box">
+                        <div class="report-org-tag">QUICKENEL SENTINEL | DATA CENTER THERMAL TWIN</div>
+                        <h2 class="report-main-title">Data Center Digital Twin Simulation Report</h2>
+                        <p class="report-main-sub">Machine Learning-Enhanced Predictive Thermal Management & Counterfactual Optimization</p>
+                        <div class="report-meta-grid">
+                            <div><strong>Simulation ID:</strong> <span id="repSimId">SIM-20261001-001</span></div>
+                            <div><strong>Date:</strong> <span id="repDate">2026-10-01</span></div>
+                            <div><strong>Configured Duration:</strong> <span id="repDuration">01:00:00</span></div>
+                            <div><strong>Operating Mode:</strong> <span id="repMode">Simulation Lab</span></div>
+                            <div><strong>Weather Condition:</strong> <span id="repWeather">Normal Ambient</span></div>
+                            <div><strong>Injected Scenario:</strong> <span id="repScenario">Nominal Operation</span></div>
+                        </div>
+                    </div>
+
+                    <!-- In-Browser Report Sections -->
+                    <div class="report-section-block">
+                        <h3>1. Simulation Configuration</h3>
+                        <p id="repConfigSummary">Duration: 1h, Racks: 8, Supply Setpoint: 18.0°C, Airflow: 8500 CFM, Model: XGBoost Regressor.</p>
+                    </div>
+
+                    <div class="report-section-block">
+                        <h3>2. Thermal Performance & Safety Compliance</h3>
+                        <div class="report-stats-grid">
+                            <div class="rep-stat-item"><span>Max Temperature</span><strong id="repMaxTemp">29.2°C</strong></div>
+                            <div class="rep-stat-item"><span>Average Temperature</span><strong id="repAvgTemp">25.4°C</strong></div>
+                            <div class="rep-stat-item"><span>SLA Thermal Violations</span><strong id="repViolations">0</strong></div>
+                            <div class="rep-stat-item"><span>Hotspot Risk Peak</span><strong id="repRisk">12%</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="report-section-block">
+                        <h3>3. ML Forecasting Accuracy</h3>
+                        <div class="report-stats-grid">
+                            <div class="rep-stat-item"><span>Model Architecture</span><strong id="repModelName">XGBoost</strong></div>
+                            <div class="rep-stat-item"><span>MAE</span><strong id="repMae">0.380°C</strong></div>
+                            <div class="rep-stat-item"><span>RMSE</span><strong id="repRmse">0.520°C</strong></div>
+                            <div class="rep-stat-item"><span>R² Determination</span><strong id="repR2">0.9880</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="report-section-block">
+                        <h3>4. Counterfactual Optimization Summary</h3>
+                        <p id="repOptSummary">Automated counterfactual evaluation explored 5 candidate interventions in cloned digital twins, selecting the optimal safe policy with an estimated 21.1% cooling energy reduction.</p>
+                    </div>
+
+                    <div class="report-section-block">
+                        <h3>5. Final Executive Conclusion</h3>
+                        <div class="report-conclusion-box">
+                            <p><strong>Simulation completed successfully.</strong> The physics-informed ML digital twin platform successfully maintained all server racks within ASHRAE thermal compliance envelopes, prevented all predicted thermal hotspots, and achieved a verified <strong>18.4% total cooling energy reduction</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- 11. SIMULATION HISTORY PAGE -->
+            <!-- ============================================================= -->
+            <section class="page-section" id="secHistory">
+                <div class="section-header-row">
+                    <div>
+                        <h2>Simulation Run History & Past Telemetry Records</h2>
+                        <p class="section-desc">Persistent local database archive of completed, stopped, and interrupted simulation executions with full telemetry export.</p>
+                    </div>
+                    <div class="section-actions">
+                        <button id="btnRefreshHistory" class="btn btn-outline">Refresh History</button>
+                        <a href="/api/simulation/history/export/pdf" id="btnExportAllHistoryPdf" class="btn btn-export-pdf" download>Export History (PDF)</a>
+                        <a href="/api/simulation/history/export/csv" id="btnExportAllHistoryCsv" class="btn btn-cyan" download>Export All History (CSV)</a>
+                        <button id="btnClearHistory" class="btn btn-danger btn-sm">Clear History</button>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3>Archived Simulation Executions</h3>
+                        <span class="badge badge-cyan" id="historyRecordCountBadge">0 Records</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table" id="tableSimHistory">
+                            <thead>
+                                <tr>
+                                    <th>Sim ID</th>
+                                    <th>Mode</th>
+                                    <th>Status</th>
+                                    <th>Duration</th>
+                                    <th>Elapsed</th>
+                                    <th>Peak Temp</th>
+                                    <th>Avg PUE</th>
+                                    <th>Energy Saved</th>
+                                    <th>Violations</th>
+                                    <th>Timestamp</th>
+                                    <th>Download Records</th>
+                                </tr>
+                            </thead>
+                            <tbody id="simHistoryTableBody">
+                                <tr>
+                                    <td colspan="11" style="text-align:center; padding: 24px; color: var(--text-muted);">
+                                        Loading past simulation records...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Global End-of-Simulation Results Modal -->
+    <div id="simResultModal" class="sim-result-modal-overlay" style="display: none;">
+        <div class="result-modal-dialog">
+            <div class="result-modal-header">
+                <div class="modal-title-wrap">
+                    <span id="resModalStatusBadge" class="badge badge-success">COMPLETED</span>
+                    <h2 id="resModalTitle">Simulation Results & Engineering Performance Summary</h2>
+                    <p id="resModalSubtitle">Simulation run complete. Detailed thermodynamic, energy, and ML model performance metrics captured below.</p>
+                </div>
+                <button class="modal-close-btn" id="btnCloseResultModal">&times;</button>
+            </div>
+
+            <div class="result-modal-body">
+                <!-- Interrupted notice (shown if status is STOPPED / INTERRUPTED) -->
+                <div id="resModalInterruptedNotice" class="interrupted-notice" style="display: none;">
+                    <div class="notice-icon">!</div>
+                    <div>
+                        <strong>SIMULATION INTERRUPTED / STOPPED MID-RUN</strong>
+                        <p>Execution was stopped at t=<span id="resModalInterruptedTime">00:00:00</span>. Interim telemetry, thermodynamics, and energy savings were recorded up to this point.</p>
+                    </div>
+                </div>
+
+                <!-- Run Meta Ribbon -->
+                <div class="modal-meta-ribbon">
+                    <div class="meta-item">
+                        <span class="meta-label">SIMULATION ID</span>
+                        <strong id="mResSimId">SIM-20261001-001</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">MODE</span>
+                        <strong id="mResMode">Standard Baseline</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">RUNTIME ELAPSED</span>
+                        <strong id="mResDuration">01:00:00 (100%)</strong>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">TIMESTAMP</span>
+                        <strong id="mResTimestamp">2026-10-01 15:45:00</strong>
+                    </div>
+                </div>
+
+                <!-- 4 KPI Performance Cards Grid -->
+                <div class="result-grid-4col" style="margin-top: 18px;">
+                    <div class="result-box">
+                        <div class="result-box-title">THERMAL STABILITY</div>
+                        <div class="res-stat-row"><span>Peak Observed Temp:</span> <strong id="mResMaxTemp" style="color: #00e676;">28.4°C</strong></div>
+                        <div class="res-stat-row"><span>Average Room Temp:</span> <strong id="mResAvgTemp">24.6°C</strong></div>
+                        <div class="res-stat-row"><span>Minimum Temp:</span> <strong id="mResMinTemp">22.1°C</strong></div>
+                        <div class="res-stat-row"><span>Thermal Violations:</span> <strong id="mResViolations">0</strong></div>
+                        <div class="res-stat-row"><span>Peak Hotspot Risk:</span> <strong id="mResMaxRisk">12%</strong></div>
+                    </div>
+
+                    <div class="result-box">
+                        <div class="result-box-title">ENERGY & PUE</div>
+                        <div class="res-stat-row"><span>Average PUE:</span> <strong id="mResAvgPue" style="color: #00e676;">1.26</strong></div>
+                        <div class="res-stat-row"><span>Net Energy Saved:</span> <strong id="mResEnergySaved" style="color: #00e676;">19.4%</strong></div>
+                        <div class="res-stat-row"><span>Cooling Energy:</span> <strong id="mResCoolingEnergy">21.8 kWh</strong></div>
+                        <div class="res-stat-row"><span>Total IT Energy:</span> <strong id="mResItEnergy">45.2 kWh</strong></div>
+                        <div class="res-stat-row"><span>Peak Cooling Power:</span> <strong id="mResPeakCooling">28.0 kW</strong></div>
+                    </div>
+
+                    <div class="result-box">
+                        <div class="result-box-title">ML FORECAST ACCURACY</div>
+                        <div class="res-stat-row"><span>Active Model:</span> <strong id="mResMlModel">XGBoost Regressor</strong></div>
+                        <div class="res-stat-row"><span>MAE (Mean Absolute):</span> <strong id="mResMlMae">0.38°C</strong></div>
+                        <div class="res-stat-row"><span>RMSE:</span> <strong id="mResMlRmse">0.52°C</strong></div>
+                        <div class="res-stat-row"><span>R² Determination:</span> <strong id="mResMlR2">0.988</strong></div>
+                        <div class="res-stat-row"><span>Inference Latency:</span> <strong id="mResMlLatency">3.8 ms</strong></div>
+                    </div>
+
+                    <div class="result-box">
+                        <div class="result-box-title">OPTIMIZATION POLICY</div>
+                        <div class="res-stat-row"><span>Interventions Applied:</span> <strong id="mResInterventionsCount">2</strong></div>
+                        <div class="res-stat-row"><span>Optimal Policy:</span> <strong id="mResPolicyName">Proactive Combined</strong></div>
+                        <div class="res-stat-row"><span>Violations Prevented:</span> <strong id="mResViolationsPrevented">12</strong></div>
+                        <div class="res-stat-row"><span>Cooling Saved:</span> <strong id="mResCoolingSaved">6.4 kWh</strong></div>
+                        <div class="res-stat-row"><span>Safety Status:</span> <strong style="color: #00e676;">100% Guaranteed</strong></div>
+                    </div>
+                </div>
+
+                <!-- Export & Action Buttons -->
+                <div class="result-modal-actions-bar">
+                    <div class="export-btn-group">
+                        <a href="/api/report/pdf" id="btnResModalPdf" class="btn btn-export-pdf" download>Export PDF Report</a>
+                        <button id="btnResModalDownloadJson" class="btn btn-cyan">Download Telemetry (JSON)</button>
+                        <button id="btnResModalDownloadCsv" class="btn btn-outline">Download Summary (CSV)</button>
+                    </div>
+                    <div>
+                        <button id="btnResModalClose" class="btn btn-outline">Close & Return to Twin</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- What-If Simulator Modal (Section 14) -->
+    <div id="whatIfModal" class="app-modal" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-header">
+                <h3>🔬 Counterfactual What-If Simulator</h3>
+                <button class="modal-close-btn" id="btnCloseWhatIfModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Manually configure operational parameters and simulate both branches forward to measure energy savings and temperature reduction.</p>
+                <div class="form-grid-3col">
+                    <div class="form-group">
+                        <label class="form-label">Workload (%): <span id="valWiWorkload">75%</span></label>
+                        <input type="range" id="sliderWiWorkload" class="form-range" min="10" max="100" value="75">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cooling Setpoint: <span id="valWiCooling">17.0°C</span></label>
+                        <input type="range" id="sliderWiCooling" class="form-range" min="14" max="24" step="0.5" value="17.0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Airflow (CFM): <span id="valWiAirflow">9500 CFM</span></label>
+                        <input type="range" id="sliderWiAirflow" class="form-range" min="4000" max="13000" step="250" value="9500">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ambient Temp: <span id="valWiAmbient">28.0°C</span></label>
+                        <input type="range" id="sliderWiAmbient" class="form-range" min="15" max="45" step="0.5" value="28.0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Active Racks: <span id="valWiActiveRacks">8 Racks</span></label>
+                        <input type="range" id="sliderWiActiveRacks" class="form-range" min="2" max="8" value="8">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Horizon (Minutes)</label>
+                        <select id="wiHorizonSelect" class="form-control">
+                            <option value="15">15 Minutes</option>
+                            <option value="30" selected>30 Minutes</option>
+                            <option value="60">60 Minutes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 16px 0;">
+                    <button id="btnRunWhatIfSim" class="btn btn-cyan btn-lg">⚡ RUN COUNTERFACTUAL SIMULATION</button>
+                </div>
+
+                <!-- What-If Results Comparison Grid -->
+                <div id="whatIfResultsContainer" style="display: none; margin-top: 20px;">
+                    <div class="dashboard-grid-2col">
+                        <!-- Before Card -->
+                        <div class="wi-branch-card wi-before">
+                            <div class="wi-branch-header">BRANCH 1: BEFORE (STATUS QUO)</div>
+                            <div class="wi-stat-row"><span>Peak Core Temp:</span> <strong id="wiBeforePeakTemp">33.8°C</strong></div>
+                            <div class="wi-stat-row"><span>Cooling Energy:</span> <strong id="wiBeforeCoolingKwh">18.4 kWh</strong></div>
+                            <div class="wi-stat-row"><span>Thermal Risk:</span> <strong id="wiBeforeRisk">72%</strong></div>
+                            <div class="wi-stat-row"><span>SLA Violations:</span> <strong id="wiBeforeViolations">8</strong></div>
+                        </div>
+
+                        <!-- After Card -->
+                        <div class="wi-branch-card wi-after">
+                            <div class="wi-branch-header">BRANCH 2: AFTER (COUNTERFACTUAL)</div>
+                            <div class="wi-stat-row"><span>Peak Core Temp:</span> <strong id="wiAfterPeakTemp">29.1°C</strong></div>
+                            <div class="wi-stat-row"><span>Cooling Energy:</span> <strong id="wiAfterCoolingKwh">14.6 kWh</strong></div>
+                            <div class="wi-stat-row"><span>Thermal Risk:</span> <strong id="wiAfterRisk">0% (Safe)</strong></div>
+                            <div class="wi-stat-row"><span>SLA Violations:</span> <strong id="wiAfterViolations">0</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Delta Callout Bar -->
+                    <div class="wi-deltas-bar">
+                        <div class="wi-delta-item">
+                            <span>Energy Saved:</span>
+                            <strong id="wiDeltaEnergy" style="color:#00e676;">3.8 kWh (20.6%)</strong>
+                        </div>
+                        <div class="wi-delta-item">
+                            <span>Temperature Reduction:</span>
+                            <strong id="wiDeltaTemp" style="color:#00f2fe;">-4.7°C</strong>
+                        </div>
+                        <div class="wi-delta-item">
+                            <span>SLA Violations Avoided:</span>
+                            <strong id="wiDeltaViolations" style="color:#00e676;">8 Avoided</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Rack Inspection Modal -->
+    <div id="rackDetailModal" class="app-modal" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="modalRackTitle">Rack Inspection Details</h3>
+                <button class="modal-close-btn" id="btnCloseRackModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-rack-stats-grid">
+                    <div><span>Zone:</span> <strong id="mRackZone">A</strong></div>
+                    <div><span>Core Temp:</span> <strong id="mRackTemp">25.0°C</strong></div>
+                    <div><span>Inlet Temp:</span> <strong id="mRackInlet">19.2°C</strong></div>
+                    <div><span>Outlet Temp:</span> <strong id="mRackOutlet">29.1°C</strong></div>
+                    <div><span>Electrical Power:</span> <strong id="mRackPower">2.8 kW</strong></div>
+                    <div><span>Airflow:</span> <strong id="mRackAirflow">812 CFM</strong></div>
+                    <div><span>Risk Level:</span> <strong id="mRackRisk">Safe</strong></div>
+                </div>
+
+                <div class="rack-controls-box" style="margin-top: 18px;">
+                    <h4>Interactive Rack Actuators</h4>
+                    <div class="form-group">
+                        <label class="form-label">CPU Utilization: <span id="valMRackCpu">50%</span></label>
+                        <input type="range" id="sliderMRackCpu" class="form-range" min="10" max="100" value="50">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fan Speed: <span id="valMRackFan">70%</span></label>
+                        <input type="range" id="sliderMRackFan" class="form-range" min="20" max="100" value="70">
+                    </div>
+                    <button id="btnSaveRackParams" class="btn btn-cyan btn-sm">Update Rack Parameters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Modules -->
+    <script>
+    /* ── Landing Page Logic ──────────────────────────────────────── */
+    (function () {
+        const overlay = document.getElementById('landingOverlay');
+        const enterBtn = document.getElementById('landingEnterBtn');
+        const canvas  = document.getElementById('landingCanvas');
+        const ctx     = canvas.getContext('2d');
+
+        /* Resize canvas to window */
+        function resizeCanvas() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        /* Particle system */
+        const PARTICLE_COUNT = 90;
+        const particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push({
+                x:  Math.random() * window.innerWidth,
+                y:  Math.random() * window.innerHeight,
+                r:  Math.random() * 1.6 + 0.3,
+                vx: (Math.random() - 0.5) * 0.35,
+                vy: (Math.random() - 0.5) * 0.35,
+                alpha: Math.random() * 0.6 + 0.15,
+                hue: [20, 25, 355, 30, 15][Math.floor(Math.random()*5)]  /* amber / orange / crimson */
+            });
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            /* Draw connection lines */
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 130) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255,140,66,${0.09 * (1 - dist / 130)})`;
+                        ctx.lineWidth = 0.6;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            /* Draw dots */
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${p.hue},100%,70%,${p.alpha})`;
+                ctx.fill();
+                /* Move */
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width)  p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            });
+        }
+
+        let animId;
+        function loop() {
+            drawParticles();
+            animId = requestAnimationFrame(loop);
+        }
+        loop();
+
+        /* Enter Platform button */
+        enterBtn.addEventListener('click', function () {
+            overlay.classList.add('hidden');
+            /* Stop particles after fade out */
+            setTimeout(() => {
+                cancelAnimationFrame(animId);
+                overlay.style.display = 'none';
+            }, 850);
+        });
+    })();
+    </script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
