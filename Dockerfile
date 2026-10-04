@@ -1,29 +1,24 @@
-# ── Dockerfile for ML-Enhanced Data Center Digital Twin Platform ──
+# Data Center Digital Twin: backend API + single-page frontend on port 8000
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONPATH=/app/backend
+    PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
-# Install system dependencies (build-essential for numpy/scipy if needed)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python requirements
+# CPU-only PyTorch wheels for the GRU model
 COPY backend/requirements.txt /app/backend/requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r /app/backend/requirements.txt
+    pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r /app/backend/requirements.txt
 
-# Copy frontend assets and backend code
-COPY index.html /app/index.html
-COPY style.css /app/style.css
+COPY index.html theme.css /app/
 COPY js/ /app/js/
 COPY backend/ /app/backend/
+COPY scripts/ /app/scripts/
 
 EXPOSE 8000
-
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+HEALTHCHECK --interval=30s --timeout=10s CMD curl -f http://localhost:8000/api/health || exit 1
+CMD ["python", "-m", "uvicorn", "main:app", "--app-dir", "backend", "--host", "0.0.0.0", "--port", "8000"]

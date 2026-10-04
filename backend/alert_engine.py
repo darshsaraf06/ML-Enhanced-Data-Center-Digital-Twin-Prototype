@@ -1,119 +1,141 @@
 """
-Alert and Event Logging Engine.
-Tracks real-time thermal threshold breaches, predictive early warnings,
-equipment degradation, and optimization intervention events.
+Structured event log.
+
+Every event has: time, severity (Info, Warning, Critical), category, source
+(rack, zone or facility), a short title, a one-line detail and related values.
+Events of the same kind and severity that occur within 30 simulated seconds are
+merged into one expandable entry (for example "Critical, Thermal: 6 racks above
+limit (R02, R04, ...)"). Forecast warnings use a per-rack cooldown: a rack is not
+warned again while its warning is still active.
 """
 
-from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import Any, Callable, Dict, List, Optional
+
+import model_params as P
+
+SEVERITIES = ["Info", "Warning", "Critical"]
+CATEGORIES = ["Thermal", "Forecast", "Cooling", "Power", "Workload", "Environment",
+              "Decision", "User action", "System"]
 
 
-class AlertEngine:
-    def __init__(self, max_history: int = 150):
-        self.max_history = max_history
+def fmt_time(t: float) -> str:
+    t = int(max(0, t))
+    return f"{t // 3600:02d}:{(t % 3600) // 60:02d}:{t % 60:02d}"
+
+
+def rack_list_text(codes: List[str], limit: int = 4) -> str:
+    if len(codes) <= limit:
+        return ", ".join(codes)
+    return ", ".join(codes[:limit]) + f" and {len(codes) - limit} more"
+
+
+class EventLog:
+    def __init__(self):
         self.events: List[Dict[str, Any]] = []
-        self._last_breached_racks = set()
+        self._next_id = 1
+        self._thermal_state: Dict[str, str] = {}      # rack code -> "Warning" | "Critical"
+        self._forecast_active: Dict[str, float] = {}  # rack code -> time warning was raised
 
-    def reset(self):
-        self.events = []
-        self._last_breached_racks = set()
-
-    def record_event(
-        self,
-        severity: str,
-        event_type: str,
-        description: str,
-        rack_id: Optional[str] = None,
-        sim_time_str: str = "00:00:00",
-        action_taken: str = "Logged",
-    ) -> Dict[str, Any]:
-        """Record an alert event into history."""
-        event = {
-            "id": len(self.events) + 1,
-            "timestamp": datetime.now().strftime("%H:%M:%S"),
-            "simTime": sim_time_str,
-            "rackId": rack_id or "DC-HALL",
-            "severity": severity.upper(),  # CRITICAL, WARNING, INFO
-            "eventType": event_type,
-            "description": description,
-            "actionTaken": action_taken,
+    # ── core ───────────────────────────────────────────────────────────────
+    def log(self, t: float, kind: str, severity: str, category: str, title: str, detail: str,
+            source_kind: str = "facility", source_id: str = "Facility",
+            values: Optional[Dict[str, Any]] = None, racks: Optional[List[str]] = None,
+            group_title: Optional[Callable[[List[str], int], str]] = None) -> Dict[str, Any]:
+        values = values or {}
+        racks = list(racks or [])
+        child = {"t": int(t), "time": fmt_time(t), "title": title, "detail": detail,
+                 "racks": racks, "values": values}
+        if group_title is not None:
+            for ev in reversed(self.events[-30:]):
+                if (ev["kind"] == kind and ev["severity"] == severity
+                        and int(t) - ev["t"] <= P.EVENT_MERGE_WINDOW_S):
+                    ev["items"].append(child)
+                    for code in racks:
+                        if code not in ev["racks"]:
+                            ev["racks"].append(code)
+                    ev["count"] = len(ev["items"])
+                    ev["lastT"] = int(t)
+                    ev["title"] = group_title(ev["racks"], ev["count"])
+                    ev["detail"] = detail if ev["count"] == 1 else f"{ev['count']} related events between {ev['time']} and {fmt_time(t)}. Latest: {detail}"
+                    if len(ev["racks"]) > 1:
+                        ev["sourceKind"], ev["sourceId"] = "facility", "Facility"
+                    ev["values"] = {**ev["values"], **values}
+                    return ev
+        ev = {
+            "id": self._next_id, "t": int(t), "lastT": int(t), "time": fmt_time(t),
+            "severity": severity, "category": category, "kind": kind,
+            "sourceKind": source_kind, "sourceId": source_id,
+            "title": title if group_title is None else group_title(racks, 1),
+            "detail": detail, "values": values, "racks": racks,
+            "count": 1, "items": [child],
         }
-        self.events.insert(0, event)
-        if len(self.events) > self.max_history:
-            self.events.pop()
-        return event
+        self._next_id += 1
+        self.events.append(ev)
+        return ev
 
-    def evaluate_telemetry(self, twin_physics, forecast_data: Dict[str, Any], sim_time_str: str):
-        """
-        Evaluate live state and predictive forecast to automatically raise alerts.
-        """
-        threshold = twin_physics.safety_threshold_temp
-        crit_threshold = twin_physics.critical_threshold_temp
-
-        # 1. Check current rack temperatures
-        for rack in twin_physics.racks:
-            r_id = f"R{rack['id']:02d}"
-            temp = rack["temp"]
-
-            if temp >= crit_threshold:
-                if (r_id, "CRITICAL") not in self._last_breached_racks:
-                    self.record_event(
-                        severity="CRITICAL",
-                        event_type="Thermal Threshold Exceeded",
-                        description=f"{rack['name']} reached critical core temperature of {temp:.1f}°C (Threshold: {crit_threshold:.1f}°C). Emergency cooling engaged.",
-                        rack_id=r_id,
-                        sim_time_str=sim_time_str,
-                        action_taken="Auto-Intervention Triggered",
-                    )
-                    self._last_breached_racks.add((r_id, "CRITICAL"))
-
-            elif temp >= threshold:
-                if (r_id, "WARNING") not in self._last_breached_racks:
-                    self.record_event(
-                        severity="WARNING",
-                        event_type="Warning Threshold Approaching",
-                        description=f"{rack['name']} elevated to {temp:.1f}°C. Exceeds ASHRAE recommended range.",
-                        rack_id=r_id,
-                        sim_time_str=sim_time_str,
-                        action_taken="Monitoring",
-                    )
-                    self._last_breached_racks.add((r_id, "WARNING"))
+    # ── automatic evaluations ──────────────────────────────────────────────
+    def evaluate_thermal(self, t: float, twin) -> None:
+        limit, allowable = twin.inlet_limit, twin.allowable_limit
+        for rack in twin.racks:
+            code, temp = rack["code"], rack["inletTemp"]
+            prev = self._thermal_state.get(code)
+            if temp >= allowable:
+                state = "Critical"
+            elif temp >= limit:
+                state = "Warning"
+            elif prev and temp > limit - 0.3:      # hysteresis: stay until 0.3 K below limit
+                state = "Warning"
             else:
-                self._last_breached_racks.discard((r_id, "CRITICAL"))
-                self._last_breached_racks.discard((r_id, "WARNING"))
+                state = None
+            if state and state != prev and (prev is None or SEVERITIES.index(state) > SEVERITIES.index(prev)):
+                lim = allowable if state == "Critical" else limit
+                self.log(t, f"thermal_{state.lower()}", state, "Thermal",
+                         f"{code} inlet above {lim:.0f} C",
+                         f"{code} inlet reached {temp:.1f} C (limit {lim:.1f} C).",
+                         "rack", code, {"inletTemp": round(temp, 2), "limit": lim}, [code],
+                         group_title=lambda rs, n, s=state, l=lim: (
+                             f"{rs[0]} inlet above {l:.0f} C" if len(rs) == 1
+                             else f"{len(rs)} racks above {l:.0f} C ({rack_list_text(rs)})"))
+            if state is None and prev is not None:
+                self.log(t, "thermal_clear", "Info", "Thermal", f"{code} back within limit",
+                         f"{code} inlet fell to {temp:.1f} C, below the {limit:.1f} C limit.",
+                         "rack", code, {"inletTemp": round(temp, 2)}, [code],
+                         group_title=lambda rs, n: (f"{rs[0]} back within limit" if len(rs) == 1
+                                                    else f"{len(rs)} racks back within limit ({rack_list_text(rs)})"))
+            if state is None:
+                self._thermal_state.pop(code, None)
+            else:
+                self._thermal_state[code] = state
 
-        # 2. Check predictive ML forecast for early warnings
-        for rf in forecast_data.get("rackForecasts", []):
-            r_id = f"R{rf['rackId']:02d}"
-            prob = rf.get("hotspotProbability", 0)
-            time_to_breach = rf.get("timeToBreachMin")
+    def forecast_warning(self, t: float, code: str, value: float, horizon_min: int, limit: float,
+                         probability: float) -> bool:
+        """Log a forecast warning unless one is already active for this rack. Returns True if logged."""
+        if code in self._forecast_active:
+            return False
+        self._forecast_active[code] = t
+        self.log(t, "forecast_breach", "Warning", "Forecast",
+                 f"{code} forecast to exceed {limit:.0f} C",
+                 f"{code} inlet forecast {value:.1f} C in about {horizon_min} min (limit {limit:.1f} C, probability {probability:.0f} %).",
+                 "rack", code, {"forecastTemp": round(value, 2), "horizonMin": horizon_min,
+                                "probabilityPercent": round(probability, 1), "limit": limit}, [code],
+                 group_title=lambda rs, n, l=limit: (f"{rs[0]} forecast to exceed {l:.0f} C" if len(rs) == 1
+                                                     else f"{len(rs)} racks forecast to exceed {l:.0f} C ({rack_list_text(rs)})"))
+        return True
 
-            if prob >= 70 and time_to_breach:
-                key = (r_id, f"PREDICT_{time_to_breach}m")
-                if key not in self._last_breached_racks:
-                    self.record_event(
-                        severity="CRITICAL",
-                        event_type="Predictive Hotspot Warning",
-                        description=f"{rf['rackName']} predicted to exceed {threshold:.1f}°C in approx {time_to_breach} minutes (Risk: {prob}%). Proactive mitigation recommended.",
-                        rack_id=r_id,
-                        sim_time_str=sim_time_str,
-                        action_taken="Counterfactual Analysis Recommended",
-                    )
-                    self._last_breached_racks.add(key)
+    def clear_forecast(self, code: str) -> None:
+        self._forecast_active.pop(code, None)
 
-    def get_events(self, severity_filter: Optional[str] = None) -> List[Dict[str, Any]]:
-        if severity_filter and severity_filter.upper() != "ALL":
-            return [e for e in self.events if e["severity"] == severity_filter.upper()]
-        return self.events
+    def forecast_active(self, code: str) -> bool:
+        return code in self._forecast_active
 
-    def get_summary(self) -> Dict[str, Any]:
-        critical_count = sum(1 for e in self.events if e["severity"] == "CRITICAL")
-        warning_count = sum(1 for e in self.events if e["severity"] == "WARNING")
-        info_count = sum(1 for e in self.events if e["severity"] == "INFO")
-        return {
-            "totalCount": len(self.events),
-            "criticalCount": critical_count,
-            "warningCount": warning_count,
-            "infoCount": info_count,
-            "recentEvents": self.events[:25],
-        }
+    # ── views ──────────────────────────────────────────────────────────────
+    def counts(self) -> Dict[str, Any]:
+        by_cat = {c: 0 for c in CATEGORIES}
+        by_sev = {s: 0 for s in SEVERITIES}
+        for ev in self.events:
+            by_cat[ev["category"]] = by_cat.get(ev["category"], 0) + 1
+            by_sev[ev["severity"]] = by_sev.get(ev["severity"], 0) + 1
+        return {"total": len(self.events), "byCategory": by_cat, "bySeverity": by_sev}
+
+    def recent(self, n: int = 200) -> List[Dict[str, Any]]:
+        return list(reversed(self.events[-n:]))

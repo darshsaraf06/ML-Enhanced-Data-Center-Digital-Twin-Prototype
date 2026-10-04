@@ -1,143 +1,111 @@
 """
-ML-Enhanced Data Center Digital Twin - FastAPI Backend
-=======================================================
-Starts a FastAPI server that:
-  • Serves the static engineering frontend (../index.html, ../js/, ../style.css)
-  • Exposes REST API under /api/
-  • Provides a WebSocket at /ws for real-time state broadcasts
-  • Runs a background task that steps the physics simulation every second
-    and pushes the new state to all connected WebSocket clients
-  • Trains ML models asynchronously after startup (non-blocking)
+Data Center Digital Twin - FastAPI backend.
+
+  * REST API under /api (run control, catalog, About-the-project data)
+  * WebSocket /ws pushes the latest run state twice per second while it changes
+  * Serves the single-page frontend (index.html, theme.css, js/)
+
+The simulation itself runs in a worker thread owned by run_controller.controller.
 """
 
 import asyncio
 import json
-import threading
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from simulation_state import sim
+from forecasting_engine import Forecaster, load_metrics
+from routers import about, run
+from run_controller import controller
 from ws_manager import manager
-from routers import telemetry, ml, optimizer, benchmark, scenario, simulation, counterfactual, report, experiments
 
-# ── Paths ────────────────────────────────────────────────────────────────────
 BACKEND_DIR = Path(__file__).parent.resolve()
-FRONTEND_DIR = BACKEND_DIR.parent.resolve()   # /dc proj/
+FRONTEND_DIR = BACKEND_DIR.parent.resolve()
 
 
-# ── Background simulation loop ───────────────────────────────────────────────
-async def simulation_loop():
-    """Advance physics every second and broadcast state to WebSocket clients."""
+async def broadcast_loop():
+    """Send the latest server state to every client whenever it changed."""
+    last_version = -1
+    last_sent = 0.0
+    loop = asyncio.get_running_loop()
     while True:
         try:
-            await sim.tick(1)
-            if manager.active:
-                state = sim.full_state()
-                await manager.broadcast(state)
+            now = loop.time()
+            if manager.active and (controller.version != last_version or now - last_sent > 5.0):
+                snap = controller.snapshot(include_new=True)
+                last_version = snap["version"]
+                cursors = snap.pop("_cursors", None)
+                await manager.broadcast(snap)
+                if cursors:
+                    snap["_cursors"] = cursors
+                    controller.advance_cursors(snap)
+                last_sent = now
         except Exception as exc:
-            print(f"[SIM] Simulation loop error: {exc}")
-        await asyncio.sleep(1.0)
+            print(f"[WS] broadcast error: {exc!r}")
+        await asyncio.sleep(0.5)
 
 
-async def train_ml_background():
-    """Train ML models in a thread pool so it doesn't block the event loop."""
-    loop = asyncio.get_event_loop()
-    try:
-        print("[ML] Starting multi-horizon XGBoost training in background thread…")
-        await loop.run_in_executor(None, lambda: sim.engine.forecasting.train_synthetic(n_samples=250))
-        print("[ML] ✓ Model training complete - real multi-horizon XGBoost inference active")
-    except Exception as exc:
-        print(f"[ML] Training notice (using analytic fallback): {exc}")
-
-
-# ── App lifecycle ─────────────────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Start simulation loop
-    sim_task = asyncio.create_task(simulation_loop())
-    # Start ML training (non-blocking)
-    asyncio.create_task(train_ml_background())
-    print("[API] ✓ Data Center Digital Twin backend started on http://localhost:8000")
-    print("[API] ✓ Frontend served at http://localhost:8000/")
+    task = asyncio.create_task(broadcast_loop())
+    models = Forecaster.available_models()
+    print(f"[API] Forecast models available: {', '.join(models)}")
+    if not load_metrics():
+        print("[API] No trained models found: run scripts/train_models.py (persistence forecasts are used until then)")
     yield
-    sim_task.cancel()
+    for ws in list(manager.active):      # close sockets so a reload never waits on them
+        try:
+            await ws.close()
+        except Exception:
+            pass
+    task.cancel()
     try:
-        await sim_task
+        await task
     except asyncio.CancelledError:
         pass
 
 
-# ── FastAPI app ───────────────────────────────────────────────────────────────
-app = FastAPI(
-    title="ML-Enhanced Data Center Digital Twin API",
-    description="Physics-informed RC thermal engine with ML predictive forecasting and counterfactual optimization.",
-    version="2.0.0",
-    lifespan=lifespan,
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# ── Register API routers ──────────────────────────────────────────────────────
-app.include_router(simulation.router)
-app.include_router(telemetry.router)
-app.include_router(ml.router)
-app.include_router(optimizer.router)
-app.include_router(counterfactual.router)
-app.include_router(benchmark.router)
-app.include_router(scenario.router)
-app.include_router(experiments.router)
-app.include_router(report.router)
+app = FastAPI(title="Data Center Digital Twin API", version="3.0.0", lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.include_router(run.router)
+app.include_router(run.logs_router)
+app.include_router(about.router)
 
 
-# ── WebSocket endpoint ────────────────────────────────────────────────────────
 @app.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket):
     await manager.connect(ws)
-    # Send full state immediately on connect
     try:
-        await ws.send_text(json.dumps(sim.full_state()))
-    except Exception:
-        manager.disconnect(ws)
-        return
-
-    try:
+        await ws.send_text(json.dumps(controller.snapshot(include_new=False)))
         while True:
-            # Keep connection alive; simulation loop handles broadcasts
             msg = await ws.receive_text()
             if msg == "ping":
                 await ws.send_text(json.dumps({"type": "pong"}))
-            elif msg == "step":
-                await sim.tick(1)
-                await ws.send_text(json.dumps(sim.full_state()))
     except WebSocketDisconnect:
         manager.disconnect(ws)
     except Exception:
         manager.disconnect(ws)
 
 
-# ── Health check ──────────────────────────────────────────────────────────────
 @app.get("/api/health")
 async def health():
-    return {
-        "status": "ok",
-        "wsClients": len(manager.active),
-        "simMode": sim.engine.mode,
-        "simStatus": sim.engine.status,
-        "simClock": sim.engine.to_dict()["clock"],
-        "mlTrained": sim.engine.forecasting._trained,
-    }
+    return {"status": "ok", "wsClients": len(manager.active), "runStatus": controller.status,
+            "runId": controller.run_id, "models": Forecaster.available_models()}
 
 
-# ── Serve static frontend ─────────────────────────────────────────────────────
-# Mounted LAST so API routes take priority
-if FRONTEND_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
+# ── frontend (only the app files are served) ────────────────────────────────
+@app.get("/")
+async def index():
+    return FileResponse(FRONTEND_DIR / "index.html")
+
+
+@app.get("/theme.css")
+async def stylesheet():
+    return FileResponse(FRONTEND_DIR / "theme.css", media_type="text/css")
+
+
+app.mount("/js", StaticFiles(directory=str(FRONTEND_DIR / "js")), name="js")

@@ -1,0 +1,988 @@
+{
+  "generatedAt": "2026-10-04 12:29:49",
+  "horizonsMin": [
+    5,
+    10,
+    15,
+    30,
+    60
+  ],
+  "limitC": 27.0,
+  "rows": {
+    "total": 199680,
+    "train": 109472,
+    "testChronological": 59488,
+    "heldoutScenario": 30720
+  },
+  "heldOutEvents": [
+    "flood",
+    "cyclone"
+  ],
+  "models": {
+    "persistence": {
+      "id": "persistence",
+      "name": "Persistence baseline",
+      "description": "Assumes the temperature stays as it is now. The reference every model must beat.",
+      "chronological": {
+        "5": {
+          "mae": 0.549,
+          "rmse": 1.0198,
+          "r2": 0.9848,
+          "within05Pct": 66.68,
+          "within1Pct": 82.04,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 55968
+        },
+        "10": {
+          "mae": 0.9768,
+          "rmse": 1.6091,
+          "r2": 0.9626,
+          "within05Pct": 53.1,
+          "within1Pct": 65.12,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 52448
+        },
+        "15": {
+          "mae": 1.2738,
+          "rmse": 1.9797,
+          "r2": 0.9442,
+          "within05Pct": 46.38,
+          "within1Pct": 58.01,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 48928
+        },
+        "30": {
+          "mae": 1.586,
+          "rmse": 2.3772,
+          "r2": 0.9224,
+          "within05Pct": 41.92,
+          "within1Pct": 51.94,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 38368
+        },
+        "60": {
+          "mae": 1.919,
+          "rmse": 2.781,
+          "r2": 0.8963,
+          "within05Pct": 34.95,
+          "within1Pct": 47.38,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 17248
+        }
+      },
+      "heldoutScenario": {
+        "5": {
+          "mae": 1.2922,
+          "rmse": 2.2982,
+          "r2": 0.9396,
+          "within05Pct": 43.23,
+          "within1Pct": 59.2,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 30080
+        },
+        "10": {
+          "mae": 2.3486,
+          "rmse": 3.7423,
+          "r2": 0.8415,
+          "within05Pct": 26.1,
+          "within1Pct": 42.52,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 29440
+        },
+        "15": {
+          "mae": 3.2015,
+          "rmse": 4.8339,
+          "r2": 0.7388,
+          "within05Pct": 23.69,
+          "within1Pct": 31.58,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 28800
+        },
+        "30": {
+          "mae": 4.2874,
+          "rmse": 6.171,
+          "r2": 0.5845,
+          "within05Pct": 19.33,
+          "within1Pct": 26.66,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 26880
+        },
+        "60": {
+          "mae": 4.5772,
+          "rmse": 6.6855,
+          "r2": 0.549,
+          "within05Pct": 15.28,
+          "within1Pct": 22.3,
+          "skillRmse": 0.0,
+          "skillMae": 0.0,
+          "n": 23040
+        }
+      },
+      "trainSeconds": 0.0,
+      "hotspot": {
+        "chronological": {
+          "precision": null,
+          "rowsEvaluated": 43250,
+          "accuracyPct": 97.62,
+          "recall": 0.0,
+          "f1": null,
+          "positives": 1028,
+          "rows": 59136,
+          "falseAlarms": 0,
+          "missed": 1028,
+          "episodes": 152,
+          "episodesWarned": 0,
+          "meanLeadMin": null,
+          "medianLeadMin": null
+        },
+        "heldoutScenario": {
+          "precision": null,
+          "rowsEvaluated": 19652,
+          "accuracyPct": 83.49,
+          "recall": 0.0,
+          "f1": null,
+          "positives": 3244,
+          "rows": 30656,
+          "falseAlarms": 0,
+          "missed": 3244,
+          "episodes": 117,
+          "episodesWarned": 0,
+          "meanLeadMin": null,
+          "medianLeadMin": null
+        }
+      }
+    },
+    "linear": {
+      "id": "linear",
+      "name": "Linear regression",
+      "description": "Ridge-regularised linear model on standardised features, one per horizon.",
+      "chronological": {
+        "5": {
+          "mae": 0.4873,
+          "rmse": 0.8462,
+          "r2": 0.9895,
+          "within05Pct": 71.86,
+          "within1Pct": 86.42,
+          "skillRmse": 0.1702,
+          "skillMae": 0.1125,
+          "n": 55968
+        },
+        "10": {
+          "mae": 0.9825,
+          "rmse": 1.4178,
+          "r2": 0.971,
+          "within05Pct": 42.42,
+          "within1Pct": 67.73,
+          "skillRmse": 0.1189,
+          "skillMae": -0.0059,
+          "n": 52448
+        },
+        "15": {
+          "mae": 1.3149,
+          "rmse": 1.761,
+          "r2": 0.9558,
+          "within05Pct": 24.9,
+          "within1Pct": 55.0,
+          "skillRmse": 0.1105,
+          "skillMae": -0.0323,
+          "n": 48928
+        },
+        "30": {
+          "mae": 1.7089,
+          "rmse": 2.2069,
+          "r2": 0.9331,
+          "within05Pct": 15.92,
+          "within1Pct": 41.46,
+          "skillRmse": 0.0717,
+          "skillMae": -0.0775,
+          "n": 38368
+        },
+        "60": {
+          "mae": 2.2722,
+          "rmse": 2.9792,
+          "r2": 0.881,
+          "within05Pct": 17.7,
+          "within1Pct": 36.44,
+          "skillRmse": -0.0713,
+          "skillMae": -0.1841,
+          "n": 17248
+        }
+      },
+      "heldoutScenario": {
+        "5": {
+          "mae": 1.1474,
+          "rmse": 2.0648,
+          "r2": 0.9513,
+          "within05Pct": 51.8,
+          "within1Pct": 67.85,
+          "skillRmse": 0.1016,
+          "skillMae": 0.112,
+          "n": 30080
+        },
+        "10": {
+          "mae": 2.0852,
+          "rmse": 3.2928,
+          "r2": 0.8773,
+          "within05Pct": 24.85,
+          "within1Pct": 44.74,
+          "skillRmse": 0.1201,
+          "skillMae": 0.1122,
+          "n": 29440
+        },
+        "15": {
+          "mae": 2.7338,
+          "rmse": 4.1672,
+          "r2": 0.8058,
+          "within05Pct": 17.38,
+          "within1Pct": 33.47,
+          "skillRmse": 0.1379,
+          "skillMae": 0.1461,
+          "n": 28800
+        },
+        "30": {
+          "mae": 3.3199,
+          "rmse": 4.8174,
+          "r2": 0.7468,
+          "within05Pct": 13.21,
+          "within1Pct": 27.68,
+          "skillRmse": 0.2194,
+          "skillMae": 0.2256,
+          "n": 26880
+        },
+        "60": {
+          "mae": 4.2892,
+          "rmse": 6.3242,
+          "r2": 0.5964,
+          "within05Pct": 11.09,
+          "within1Pct": 21.74,
+          "skillRmse": 0.054,
+          "skillMae": 0.0629,
+          "n": 23040
+        }
+      },
+      "trainSeconds": 1.8,
+      "hotspot": {
+        "chronological": {
+          "precision": 0.3326,
+          "rowsEvaluated": 43250,
+          "accuracyPct": 97.25,
+          "recall": 0.1556,
+          "f1": 0.2121,
+          "positives": 1028,
+          "rows": 59136,
+          "falseAlarms": 321,
+          "missed": 868,
+          "episodes": 152,
+          "episodesWarned": 17,
+          "meanLeadMin": 4.47,
+          "medianLeadMin": 5.5
+        },
+        "heldoutScenario": {
+          "precision": 0.5845,
+          "rowsEvaluated": 19652,
+          "accuracyPct": 83.85,
+          "recall": 0.0746,
+          "f1": 0.1323,
+          "positives": 3244,
+          "rows": 30656,
+          "falseAlarms": 172,
+          "missed": 3002,
+          "episodes": 117,
+          "episodesWarned": 68,
+          "meanLeadMin": 1.76,
+          "medianLeadMin": 1.0
+        }
+      }
+    },
+    "rf": {
+      "id": "rf",
+      "name": "Random forest",
+      "description": "Ensemble of 60 decision trees (depth 14), one forest per horizon.",
+      "chronological": {
+        "5": {
+          "mae": 0.4991,
+          "rmse": 1.0003,
+          "r2": 0.9854,
+          "within05Pct": 74.06,
+          "within1Pct": 85.05,
+          "skillRmse": 0.0191,
+          "skillMae": 0.091,
+          "n": 55968
+        },
+        "10": {
+          "mae": 0.9667,
+          "rmse": 1.5564,
+          "r2": 0.965,
+          "within05Pct": 52.54,
+          "within1Pct": 70.2,
+          "skillRmse": 0.0327,
+          "skillMae": 0.0103,
+          "n": 52448
+        },
+        "15": {
+          "mae": 1.4251,
+          "rmse": 2.1881,
+          "r2": 0.9318,
+          "within05Pct": 40.85,
+          "within1Pct": 57.44,
+          "skillRmse": -0.1052,
+          "skillMae": -0.1187,
+          "n": 48928
+        },
+        "30": {
+          "mae": 1.6069,
+          "rmse": 2.2221,
+          "r2": 0.9322,
+          "within05Pct": 30.59,
+          "within1Pct": 48.07,
+          "skillRmse": 0.0653,
+          "skillMae": -0.0131,
+          "n": 38368
+        },
+        "60": {
+          "mae": 2.3475,
+          "rmse": 3.1356,
+          "r2": 0.8682,
+          "within05Pct": 13.28,
+          "within1Pct": 35.21,
+          "skillRmse": -0.1275,
+          "skillMae": -0.2233,
+          "n": 17248
+        }
+      },
+      "heldoutScenario": {
+        "5": {
+          "mae": 1.3446,
+          "rmse": 2.5572,
+          "r2": 0.9253,
+          "within05Pct": 53.01,
+          "within1Pct": 63.69,
+          "skillRmse": -0.1127,
+          "skillMae": -0.0406,
+          "n": 30080
+        },
+        "10": {
+          "mae": 2.193,
+          "rmse": 3.6044,
+          "r2": 0.853,
+          "within05Pct": 32.37,
+          "within1Pct": 48.38,
+          "skillRmse": 0.0369,
+          "skillMae": 0.0662,
+          "n": 29440
+        },
+        "15": {
+          "mae": 2.8811,
+          "rmse": 4.6772,
+          "r2": 0.7554,
+          "within05Pct": 24.68,
+          "within1Pct": 38.66,
+          "skillRmse": 0.0324,
+          "skillMae": 0.1001,
+          "n": 28800
+        },
+        "30": {
+          "mae": 3.4002,
+          "rmse": 5.0264,
+          "r2": 0.7244,
+          "within05Pct": 22.33,
+          "within1Pct": 33.01,
+          "skillRmse": 0.1855,
+          "skillMae": 0.2069,
+          "n": 26880
+        },
+        "60": {
+          "mae": 4.3718,
+          "rmse": 6.5209,
+          "r2": 0.5709,
+          "within05Pct": 9.89,
+          "within1Pct": 21.26,
+          "skillRmse": 0.0246,
+          "skillMae": 0.0449,
+          "n": 23040
+        }
+      },
+      "trainSeconds": 137.2,
+      "hotspot": {
+        "chronological": {
+          "precision": 0.104,
+          "rowsEvaluated": 43250,
+          "accuracyPct": 95.72,
+          "recall": 0.1051,
+          "f1": 0.1045,
+          "positives": 1028,
+          "rows": 59136,
+          "falseAlarms": 930,
+          "missed": 920,
+          "episodes": 152,
+          "episodesWarned": 25,
+          "meanLeadMin": 1.74,
+          "medianLeadMin": 1.0
+        },
+        "heldoutScenario": {
+          "precision": 0.4187,
+          "rowsEvaluated": 19652,
+          "accuracyPct": 83.05,
+          "recall": 0.0691,
+          "f1": 0.1185,
+          "positives": 3244,
+          "rows": 30656,
+          "falseAlarms": 311,
+          "missed": 3020,
+          "episodes": 117,
+          "episodesWarned": 40,
+          "meanLeadMin": 2.44,
+          "medianLeadMin": 1.5
+        }
+      },
+      "featureImportance": [
+        {
+          "feature": "wet_bulb",
+          "label": "Outside wet-bulb temperature (C)",
+          "importance": 0.1443
+        },
+        {
+          "feature": "supply_rate",
+          "label": "Current rate of change of supply air (K per minute)",
+          "importance": 0.1316
+        },
+        {
+          "feature": "supply",
+          "label": "Supply air temperature (C)",
+          "importance": 0.1016
+        },
+        {
+          "feature": "inlet",
+          "label": "Current inlet temperature (C)",
+          "importance": 0.082
+        },
+        {
+          "feature": "capacity_margin",
+          "label": "Spare cooling capacity as a share of design IT power",
+          "importance": 0.0716
+        },
+        {
+          "feature": "airflow_ratio",
+          "label": "CRAH airflow divided by server airflow demand",
+          "importance": 0.0714
+        },
+        {
+          "feature": "setpoint",
+          "label": "Supply air setpoint (C)",
+          "importance": 0.0617
+        },
+        {
+          "feature": "crah_fraction",
+          "label": "CRAH airflow command (share of design)",
+          "importance": 0.052
+        },
+        {
+          "feature": "supply_over_setpoint",
+          "label": "Supply air minus setpoint (K)",
+          "importance": 0.051
+        },
+        {
+          "feature": "outside",
+          "label": "Outside dry-bulb temperature (C)",
+          "importance": 0.0509
+        },
+        {
+          "feature": "recirc",
+          "label": "Recirculation share at the rack inlet",
+          "importance": 0.0475
+        },
+        {
+          "feature": "exhaust",
+          "label": "Current exhaust temperature (C)",
+          "importance": 0.0397
+        },
+        {
+          "feature": "d_inlet_300",
+          "label": "Inlet change over the last 5 min (K)",
+          "importance": 0.0279
+        },
+        {
+          "feature": "d_supply_300",
+          "label": "Supply air change over the last 5 min (K)",
+          "importance": 0.0272
+        },
+        {
+          "feature": "crah_status",
+          "label": "CRAH airflow availability reported by the units (0 to 1)",
+          "importance": 0.0093
+        },
+        {
+          "feature": "inlet_gap",
+          "label": "Steady-state inlet the air is mixing toward, minus current inlet (K)",
+          "importance": 0.0085
+        },
+        {
+          "feature": "d_inlet_60",
+          "label": "Inlet change over the last 60 s (K)",
+          "importance": 0.0083
+        },
+        {
+          "feature": "exhaust_rise",
+          "label": "Exhaust minus inlet temperature (K)",
+          "importance": 0.0043
+        },
+        {
+          "feature": "power_kw",
+          "label": "Rack power (kW)",
+          "importance": 0.0023
+        },
+        {
+          "feature": "chiller_status",
+          "label": "Chiller availability reported by the plant (0 to 1)",
+          "importance": 0.0023
+        },
+        {
+          "feature": "util",
+          "label": "Rack utilization (%)",
+          "importance": 0.0015
+        },
+        {
+          "feature": "d_util_300",
+          "label": "Utilization change over the last 5 min (points)",
+          "importance": 0.0015
+        },
+        {
+          "feature": "power_frac",
+          "label": "Rack power as a share of its maximum",
+          "importance": 0.0013
+        },
+        {
+          "feature": "row_end",
+          "label": "Rack is at the end of a row (1) or not (0)",
+          "importance": 0.0003
+        },
+        {
+          "feature": "zone_b",
+          "label": "Rack is in zone B (1) or A (0)",
+          "importance": 0.0002
+        }
+      ]
+    },
+    "xgboost": {
+      "id": "xgboost",
+      "name": "XGBoost",
+      "description": "Gradient boosted trees (300 rounds, depth 6), one model per horizon.",
+      "chronological": {
+        "5": {
+          "mae": 0.4947,
+          "rmse": 0.9448,
+          "r2": 0.9869,
+          "within05Pct": 73.77,
+          "within1Pct": 85.35,
+          "skillRmse": 0.0735,
+          "skillMae": 0.0989,
+          "n": 55968
+        },
+        "10": {
+          "mae": 0.9357,
+          "rmse": 1.4798,
+          "r2": 0.9684,
+          "within05Pct": 52.68,
+          "within1Pct": 68.77,
+          "skillRmse": 0.0804,
+          "skillMae": 0.042,
+          "n": 52448
+        },
+        "15": {
+          "mae": 1.2827,
+          "rmse": 1.833,
+          "r2": 0.9521,
+          "within05Pct": 36.77,
+          "within1Pct": 57.56,
+          "skillRmse": 0.0741,
+          "skillMae": -0.0069,
+          "n": 48928
+        },
+        "30": {
+          "mae": 1.5865,
+          "rmse": 2.0919,
+          "r2": 0.9399,
+          "within05Pct": 22.44,
+          "within1Pct": 44.83,
+          "skillRmse": 0.12,
+          "skillMae": -0.0003,
+          "n": 38368
+        },
+        "60": {
+          "mae": 2.4009,
+          "rmse": 3.0376,
+          "r2": 0.8763,
+          "within05Pct": 13.24,
+          "within1Pct": 29.13,
+          "skillRmse": -0.0923,
+          "skillMae": -0.2511,
+          "n": 17248
+        }
+      },
+      "heldoutScenario": {
+        "5": {
+          "mae": 1.2132,
+          "rmse": 2.224,
+          "r2": 0.9435,
+          "within05Pct": 51.49,
+          "within1Pct": 65.62,
+          "skillRmse": 0.0323,
+          "skillMae": 0.0611,
+          "n": 30080
+        },
+        "10": {
+          "mae": 2.0962,
+          "rmse": 3.5084,
+          "r2": 0.8607,
+          "within05Pct": 33.51,
+          "within1Pct": 47.73,
+          "skillRmse": 0.0625,
+          "skillMae": 0.1075,
+          "n": 29440
+        },
+        "15": {
+          "mae": 2.7461,
+          "rmse": 4.4289,
+          "r2": 0.7807,
+          "within05Pct": 24.43,
+          "within1Pct": 39.11,
+          "skillRmse": 0.0838,
+          "skillMae": 0.1422,
+          "n": 28800
+        },
+        "30": {
+          "mae": 3.532,
+          "rmse": 5.1391,
+          "r2": 0.7119,
+          "within05Pct": 17.28,
+          "within1Pct": 30.97,
+          "skillRmse": 0.1672,
+          "skillMae": 0.1762,
+          "n": 26880
+        },
+        "60": {
+          "mae": 4.4212,
+          "rmse": 6.4218,
+          "r2": 0.5839,
+          "within05Pct": 9.64,
+          "within1Pct": 19.8,
+          "skillRmse": 0.0395,
+          "skillMae": 0.0341,
+          "n": 23040
+        }
+      },
+      "trainSeconds": 29.9,
+      "hotspot": {
+        "chronological": {
+          "precision": 0.3874,
+          "rowsEvaluated": 43250,
+          "accuracyPct": 97.41,
+          "recall": 0.1556,
+          "f1": 0.2221,
+          "positives": 1028,
+          "rows": 59136,
+          "falseAlarms": 253,
+          "missed": 868,
+          "episodes": 152,
+          "episodesWarned": 24,
+          "meanLeadMin": 2.75,
+          "medianLeadMin": 2.0
+        },
+        "heldoutScenario": {
+          "precision": 0.6273,
+          "rowsEvaluated": 19652,
+          "accuracyPct": 84.12,
+          "recall": 0.0934,
+          "f1": 0.1626,
+          "positives": 3244,
+          "rows": 30656,
+          "falseAlarms": 180,
+          "missed": 2941,
+          "episodes": 117,
+          "episodesWarned": 56,
+          "meanLeadMin": 2.38,
+          "medianLeadMin": 1.5
+        }
+      },
+      "featureImportance": [
+        {
+          "feature": "wet_bulb",
+          "label": "Outside wet-bulb temperature (C)",
+          "importance": 0.1262
+        },
+        {
+          "feature": "supply_rate",
+          "label": "Current rate of change of supply air (K per minute)",
+          "importance": 0.1236
+        },
+        {
+          "feature": "crah_status",
+          "label": "CRAH airflow availability reported by the units (0 to 1)",
+          "importance": 0.0806
+        },
+        {
+          "feature": "recirc",
+          "label": "Recirculation share at the rack inlet",
+          "importance": 0.0609
+        },
+        {
+          "feature": "inlet",
+          "label": "Current inlet temperature (C)",
+          "importance": 0.0578
+        },
+        {
+          "feature": "setpoint",
+          "label": "Supply air setpoint (C)",
+          "importance": 0.0567
+        },
+        {
+          "feature": "capacity_margin",
+          "label": "Spare cooling capacity as a share of design IT power",
+          "importance": 0.0564
+        },
+        {
+          "feature": "exhaust",
+          "label": "Current exhaust temperature (C)",
+          "importance": 0.0547
+        },
+        {
+          "feature": "supply",
+          "label": "Supply air temperature (C)",
+          "importance": 0.054
+        },
+        {
+          "feature": "crah_fraction",
+          "label": "CRAH airflow command (share of design)",
+          "importance": 0.0526
+        },
+        {
+          "feature": "chiller_status",
+          "label": "Chiller availability reported by the plant (0 to 1)",
+          "importance": 0.0507
+        },
+        {
+          "feature": "supply_over_setpoint",
+          "label": "Supply air minus setpoint (K)",
+          "importance": 0.0434
+        },
+        {
+          "feature": "airflow_ratio",
+          "label": "CRAH airflow divided by server airflow demand",
+          "importance": 0.0375
+        },
+        {
+          "feature": "outside",
+          "label": "Outside dry-bulb temperature (C)",
+          "importance": 0.0327
+        },
+        {
+          "feature": "d_supply_300",
+          "label": "Supply air change over the last 5 min (K)",
+          "importance": 0.0264
+        },
+        {
+          "feature": "inlet_gap",
+          "label": "Steady-state inlet the air is mixing toward, minus current inlet (K)",
+          "importance": 0.0195
+        },
+        {
+          "feature": "d_inlet_300",
+          "label": "Inlet change over the last 5 min (K)",
+          "importance": 0.0186
+        },
+        {
+          "feature": "exhaust_rise",
+          "label": "Exhaust minus inlet temperature (K)",
+          "importance": 0.0107
+        },
+        {
+          "feature": "d_inlet_60",
+          "label": "Inlet change over the last 60 s (K)",
+          "importance": 0.0091
+        },
+        {
+          "feature": "power_kw",
+          "label": "Rack power (kW)",
+          "importance": 0.006
+        },
+        {
+          "feature": "row_end",
+          "label": "Rack is at the end of a row (1) or not (0)",
+          "importance": 0.0057
+        },
+        {
+          "feature": "power_frac",
+          "label": "Rack power as a share of its maximum",
+          "importance": 0.0052
+        },
+        {
+          "feature": "util",
+          "label": "Rack utilization (%)",
+          "importance": 0.0042
+        },
+        {
+          "feature": "d_util_300",
+          "label": "Utilization change over the last 5 min (points)",
+          "importance": 0.0036
+        },
+        {
+          "feature": "zone_b",
+          "label": "Rack is in zone B (1) or A (0)",
+          "importance": 0.0034
+        }
+      ]
+    },
+    "gru": {
+      "id": "gru",
+      "name": "GRU neural network",
+      "description": "Recurrent network (PyTorch, CPU) reading the last 5 minutes of features and predicting all horizons at once.",
+      "chronological": {
+        "5": {
+          "mae": 0.6704,
+          "rmse": 1.1233,
+          "r2": 0.9815,
+          "within05Pct": 58.88,
+          "within1Pct": 80.6,
+          "skillRmse": -0.1014,
+          "skillMae": -0.2211,
+          "n": 55968
+        },
+        "10": {
+          "mae": 1.1306,
+          "rmse": 1.785,
+          "r2": 0.954,
+          "within05Pct": 47.31,
+          "within1Pct": 62.61,
+          "skillRmse": -0.1094,
+          "skillMae": -0.1575,
+          "n": 52448
+        },
+        "15": {
+          "mae": 1.3887,
+          "rmse": 2.04,
+          "r2": 0.9407,
+          "within05Pct": 39.42,
+          "within1Pct": 54.07,
+          "skillRmse": -0.0305,
+          "skillMae": -0.0901,
+          "n": 48928
+        },
+        "30": {
+          "mae": 1.8737,
+          "rmse": 2.4907,
+          "r2": 0.9148,
+          "within05Pct": 26.06,
+          "within1Pct": 39.97,
+          "skillRmse": -0.0477,
+          "skillMae": -0.1814,
+          "n": 38368
+        },
+        "60": {
+          "mae": 2.7,
+          "rmse": 3.6507,
+          "r2": 0.8213,
+          "within05Pct": 15.46,
+          "within1Pct": 28.17,
+          "skillRmse": -0.3127,
+          "skillMae": -0.407,
+          "n": 17248
+        }
+      },
+      "heldoutScenario": {
+        "5": {
+          "mae": 1.4419,
+          "rmse": 2.4254,
+          "r2": 0.9328,
+          "within05Pct": 40.27,
+          "within1Pct": 59.55,
+          "skillRmse": -0.0553,
+          "skillMae": -0.1159,
+          "n": 30080
+        },
+        "10": {
+          "mae": 2.3359,
+          "rmse": 3.6507,
+          "r2": 0.8492,
+          "within05Pct": 26.84,
+          "within1Pct": 40.17,
+          "skillRmse": 0.0245,
+          "skillMae": 0.0054,
+          "n": 29440
+        },
+        "15": {
+          "mae": 2.9048,
+          "rmse": 4.4359,
+          "r2": 0.78,
+          "within05Pct": 19.3,
+          "within1Pct": 31.55,
+          "skillRmse": 0.0823,
+          "skillMae": 0.0927,
+          "n": 28800
+        },
+        "30": {
+          "mae": 3.7894,
+          "rmse": 5.3744,
+          "r2": 0.6849,
+          "within05Pct": 13.98,
+          "within1Pct": 25.44,
+          "skillRmse": 0.1291,
+          "skillMae": 0.1162,
+          "n": 26880
+        },
+        "60": {
+          "mae": 4.4851,
+          "rmse": 6.3943,
+          "r2": 0.5874,
+          "within05Pct": 10.27,
+          "within1Pct": 18.28,
+          "skillRmse": 0.0436,
+          "skillMae": 0.0201,
+          "n": 23040
+        }
+      },
+      "trainSeconds": 69.1,
+      "hotspot": {
+        "chronological": {
+          "precision": 0.2197,
+          "rowsEvaluated": 43250,
+          "accuracyPct": 96.93,
+          "recall": 0.1148,
+          "f1": 0.1508,
+          "positives": 1028,
+          "rows": 59136,
+          "falseAlarms": 419,
+          "missed": 910,
+          "episodes": 152,
+          "episodesWarned": 21,
+          "meanLeadMin": 1.64,
+          "medianLeadMin": 1.0
+        },
+        "heldoutScenario": {
+          "precision": 0.6209,
+          "rowsEvaluated": 19652,
+          "accuracyPct": 83.9,
+          "recall": 0.0641,
+          "f1": 0.1162,
+          "positives": 3244,
+          "rows": 30656,
+          "falseAlarms": 127,
+          "missed": 3036,
+          "episodes": 117,
+          "episodesWarned": 28,
+          "meanLeadMin": 2.62,
+          "medianLeadMin": 1.0
+        }
+      }
+    }
+  },
+  "trainedAt": "2026-10-04 07:08:39"
+}

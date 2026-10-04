@@ -1,215 +1,188 @@
 """
-Counterfactual Decision & Multi-Objective Optimization Engine.
-Simulates candidate cooling and workload interventions inside cloned Digital Twin instances.
-Cost function enforces strict thermal safety, then optimizes energy consumption:
-    J = w_safety * Violation_Penalty + w_energy * E_cooling + w_temp * (T_peak - T_target) + w_effort * Action_Cost
-Unsafe actions are strictly flagged and cannot be recommended.
+Counterfactual decision engine.
+
+Each candidate action is applied to a cloned twin and simulated 30 minutes ahead
+with the conditions that are active now (workload, events, weather held constant:
+the twin does not know the future). For every branch we record the peak rack inlet
+temperature, facility energy and the workload disruption it causes.
+
+    safe      = peak inlet over the horizon <= inlet limit
+    cost J    = w_energy * energy change vs no action (%)
+              + w_temperature * 10 * max(0, peak - (limit - margin))
+              + w_disruption * disruption
+    disruption: 0.05 per utilization point migrated, 2 per kW of power capped.
+The recommended action is the safe action with the lowest J. If no action is safe,
+the action with the lowest peak is recommended and marked as the best available.
+
+The predictive tuner (every 5 minutes) uses the same clones to pick the supply-air
+setpoint and CRAH airflow with the lowest facility energy whose forecast peak inlet
+stays at least 2.0 K below the limit.
 """
 
-from typing import List, Dict, Any, Optional
-import copy
+from typing import Any, Dict, List, Optional
+
+import model_params as P
+
+ACTIONS: Dict[str, Dict[str, str]] = {
+    "none": {"title": "No action", "description": "Keep current cooling and workload settings."},
+    "airflow_boost": {"title": "Boost CRAH airflow", "description": "Raise CRAH airflow by 20 percentage points of design (cube-law fan energy)."},
+    "setpoint_drop": {"title": "Lower supply air setpoint", "description": "Lower the supply-air setpoint by 2 C (chiller works harder, lower COP)."},
+    "workload_migration": {"title": "Migrate workload", "description": "Move up to 25 utilization points from the hottest rack to the coolest racks with headroom."},
+    "power_cap": {"title": "Cap rack power", "description": "Cap the hottest rack at 85 % of its current power for 15 minutes."},
+    "combined": {"title": "Combined response", "description": "Airflow +10 points, setpoint -1 C and migrate 15 utilization points."},
+}
+ACTION_ORDER = ["none", "airflow_boost", "setpoint_drop", "workload_migration", "power_cap", "combined"]
+POWER_CAP_DURATION_S = 900
 
 
-CANDIDATE_INTERVENTIONS = [
-    {
-        "id": "status_quo",
-        "title": "Action A: Status Quo (No Intervention)",
-        "type": "none",
-        "description": "Maintain existing cooling supply setpoints, fan speeds, and compute allocation without adjustment.",
-        "icon": "⏸️",
-    },
-    {
-        "id": "airflow_boost",
-        "title": "Action B: Boost CRAH Airflow (+20%)",
-        "type": "mechanical",
-        "description": "Ramp CRAH fan speed to boost volumetric airflow by +1800 CFM and increase targeted rack fan speeds by +15%.",
-        "icon": "💨",
-    },
-    {
-        "id": "chiller_setpoint",
-        "title": "Action C: Lower Chiller Setpoint (-2.0°C)",
-        "type": "chiller",
-        "description": "Trim chilled air supply temperature from 18.0°C down to 16.0°C via chiller control valve adjustments.",
-        "icon": "❄️",
-    },
-    {
-        "id": "workload_migration",
-        "title": "Action D: Workload Migration / Load Balancing",
-        "type": "compute",
-        "description": "Live migrate 22% CPU/GPU container tasks from the hottest rack to cooler, underutilized racks.",
-        "icon": "🔄",
-    },
-    {
-        "id": "proactive_combined",
-        "title": "Action E: Proactive Combined Intervention",
-        "type": "compound",
-        "description": "Coordinated dynamic dispatch: 15% load migration + 10% targeted fan trim + 0.8°C supply setpoint adjustment.",
-        "icon": "⚡",
-    },
-]
+def plan_action(action_id: str, twin, hot_code: str, protected_ids: set) -> Dict[str, Any]:
+    plan: Dict[str, Any] = {"actionId": action_id, "setpoint": None, "crah": None, "migrations": [], "cap": None}
+    sp, cr = twin.supply_setpoint, twin.crah_fraction
+    if action_id == "airflow_boost":
+        plan["crah"] = min(P.CRAH_FRACTION_MAX, cr + 0.2)
+    elif action_id == "setpoint_drop":
+        plan["setpoint"] = max(P.SETPOINT_MIN_C, sp - 2.0)
+    elif action_id == "combined":
+        plan["crah"] = min(P.CRAH_FRACTION_MAX, cr + 0.1)
+        plan["setpoint"] = max(P.SETPOINT_MIN_C, sp - 1.0)
+    if action_id in ("workload_migration", "combined"):
+        plan["migrations"] = _plan_migration(twin, hot_code, protected_ids, 25.0 if action_id == "workload_migration" else 15.0)
+    if action_id == "power_cap":
+        hot = next((r for r in twin.racks if r["code"] == hot_code), None)
+        if hot is not None and hot["powerKw"] > 0:
+            plan["cap"] = (hot["id"], round(hot["powerKw"] * 0.85, 3))
+    return plan
 
 
-class CounterfactualOptimizationEngine:
-    def __init__(self):
-        self.weights = {
-            "thermalSafety": 0.45,
-            "coolingEnergy": 0.30,
-            "peakTemp": 0.15,
-            "actionEffort": 0.10,
-        }
-        self.safety_limit_temp = 33.0
+def _plan_migration(twin, hot_code: str, protected_ids: set, points: float) -> List[tuple]:
+    hot = next((r for r in twin.racks if r["code"] == hot_code), None)
+    if hot is None or hot["id"] in protected_ids:
+        return []
+    movable = min(points, max(0.0, hot["util"] - 10.0))
+    if movable <= 0:
+        return []
+    targets = sorted((r for r in twin.racks if r["id"] != hot["id"] and r["id"] not in protected_ids and not r["off"]),
+                     key=lambda r: r["inletTemp"])
+    moves = []
+    for r in targets[:3]:
+        room = max(0.0, 85.0 - r["util"])
+        take = min(room, movable)
+        if take >= 1.0:
+            moves.append((hot["id"], r["id"], round(take, 2)))
+            movable -= take
+        if movable < 1.0:
+            break
+    return moves
 
-    def apply_action_to_twin(self, twin, action_id: str):
-        """Mutate cloned DigitalTwinPhysics state."""
-        if action_id == "airflow_boost":
-            twin.crah_airflow_cfm = min(12000.0, twin.crah_airflow_cfm + 1800.0)
-            for r in twin.racks:
-                r["fanSpeed"] = min(100, r.get("fanSpeed", 70) + 15)
 
-        elif action_id == "chiller_setpoint":
-            twin.cooling_supply_temp = max(14.0, twin.cooling_supply_temp - 2.0)
+def apply_plan_to_twin(twin, plan: Dict[str, Any]):
+    """Apply a plan directly to a twin (used for cloned branches with frozen workload)."""
+    if plan.get("setpoint") is not None:
+        twin.supply_setpoint = plan["setpoint"]
+    if plan.get("crah") is not None:
+        twin.crah_fraction = plan["crah"]
+    by_id = {r["id"]: r for r in twin.racks}
+    for src, dst, pts in plan.get("migrations", []):
+        by_id[src]["util"] = max(0.0, by_id[src]["util"] - pts)
+        by_id[dst]["util"] = min(100.0, by_id[dst]["util"] + pts)
+    if plan.get("cap"):
+        rid, cap = plan["cap"]
+        by_id[rid]["powerCapKw"] = cap
 
-        elif action_id == "workload_migration":
-            sorted_racks = sorted(twin.racks, key=lambda r: r["temp"], reverse=True)
-            hot = sorted_racks[0]
-            cool = sorted_racks[-1]
-            if hot["cpuLoad"] > 35:
-                shift = min(22, hot["cpuLoad"] - 30)
-                hot["cpuLoad"] -= shift
-                cool["cpuLoad"] = min(98, cool["cpuLoad"] + shift)
-            if hot.get("gpuLoad", 0) > 20:
-                gpu_shift = min(20, hot["gpuLoad"] - 15)
-                hot["gpuLoad"] -= gpu_shift
-                cool["gpuLoad"] = min(95, cool.get("gpuLoad", 0) + gpu_shift)
 
-        elif action_id == "proactive_combined":
-            sorted_racks = sorted(twin.racks, key=lambda r: r["temp"], reverse=True)
-            hot = sorted_racks[0]
-            cool = sorted_racks[-1]
-            if hot["cpuLoad"] > 35:
-                shift = min(16, hot["cpuLoad"] - 30)
-                hot["cpuLoad"] -= shift
-                cool["cpuLoad"] = min(96, cool["cpuLoad"] + shift)
-            # Targeted fan trim on hottest rack zone
-            for r in twin.racks:
-                if r.get("zone") == hot.get("zone"):
-                    r["fanSpeed"] = min(100, r.get("fanSpeed", 70) + 10)
-            twin.cooling_supply_temp = max(15.5, twin.cooling_supply_temp - 0.8)
+def disruption_score(twin, plan: Dict[str, Any]) -> float:
+    score = 0.05 * sum(p for _, _, p in plan.get("migrations", []))
+    if plan.get("cap"):
+        rid, cap = plan["cap"]
+        rack = next(r for r in twin.racks if r["id"] == rid)
+        score += 2.0 * max(0.0, rack["powerKw"] - cap)
+    return round(score, 3)
 
-        # status_quo: no mutations
 
-    def simulate_counterfactual_branch(
-        self, base_twin, action: Dict[str, Any], horizon_steps: int = 15, baseline_kwh: float = 0.0
-    ) -> Dict[str, Any]:
-        """
-        Deep-clones base_twin, applies candidate action, advances forward in time,
-        and measures thermal outcome and energy consumption.
-        """
-        twin_clone = base_twin.clone()
-        self.apply_action_to_twin(twin_clone, action["id"])
+def simulate_branch(twin, plan: Optional[Dict[str, Any]], horizon_s: float = P.BRANCH_HORIZON_S,
+                    dt: float = P.BRANCH_DT_S) -> Dict[str, Any]:
+    clone = twin.clone()
+    if plan:
+        apply_plan_to_twin(clone, plan)
+    limit = clone.inlet_limit
+    peak = clone.max_inlet()
+    kwh = cool_kwh = 0.0
+    secs_above = 0.0
+    trajectory = []
+    steps = int(horizon_s / dt)
+    for k in range(steps):
+        out = clone.step(dt)
+        kwh += out["facilityKw"] * dt / 3600.0
+        cool_kwh += out["coolingKw"] * dt / 3600.0
+        m = out["maxInlet"]
+        peak = max(peak, m)
+        if m > limit:
+            secs_above += dt
+        if k % 12 == 11:
+            trajectory.append(round(m, 2))
+    return {"peakInlet": round(peak, 2), "energyKwh": round(kwh, 3), "coolingKwh": round(cool_kwh, 3),
+            "minutesAboveLimit": round(secs_above / 60.0, 1), "trajectory": trajectory}
 
-        total_cooling_kwh = 0.0
-        peak_temp = 0.0
-        sla_violations = 0
-        temps_timeline = []
 
-        dt_sec = 60.0  # 1 minute per step for 15-minute horizon
-        for _ in range(horizon_steps):
-            snap = twin_clone.step(dt=dt_sec)
-            cooling_kw = snap["coolingPower"]
-            total_cooling_kwh += cooling_kw * (dt_sec / 3600.0)
-            peak_temp = max(peak_temp, snap["maxTemp"])
-            if snap["maxTemp"] > self.safety_limit_temp:
-                sla_violations += 1
-            temps_timeline.append(snap["maxTemp"])
+def score_branch(result: Dict[str, Any], baseline_kwh: float, limit: float, weights: Dict[str, float],
+                 disruption: float) -> Dict[str, Any]:
+    energy_pct = (result["energyKwh"] - baseline_kwh) / baseline_kwh * 100.0 if baseline_kwh > 0 else 0.0
+    temp_term = 10.0 * max(0.0, result["peakInlet"] - (limit - P.PREDICTIVE_SAFETY_MARGIN_K))
+    j = (weights.get("energy", 1.0) * energy_pct + weights.get("temperature", 1.0) * temp_term
+         + weights.get("disruption", 1.0) * disruption)
+    return {**result, "energyChangePercent": round(energy_pct, 2), "disruption": disruption,
+            "safe": bool(result["peakInlet"] <= limit), "costScore": round(float(j), 3)}
 
-        final_max_temp = max(r["temp"] for r in twin_clone.racks)
-        is_safe = (final_max_temp <= self.safety_limit_temp) and (sla_violations == 0)
 
-        # Cost components
-        baseline_ref = max(0.1, baseline_kwh if baseline_kwh > 0 else total_cooling_kwh)
-        energy_delta_pct = round(((total_cooling_kwh - baseline_ref) / baseline_ref) * 100.0, 1)
+def choose_recommended(candidates: List[Dict[str, Any]]) -> Optional[str]:
+    done = [c for c in candidates if c.get("result")]
+    if not done:
+        return None
+    safe = [c for c in done if c["result"]["safe"]]
+    if safe:
+        return min(safe, key=lambda c: (c["result"]["costScore"], ACTION_ORDER.index(c["actionId"])))["actionId"]
+    return min(done, key=lambda c: (c["result"]["peakInlet"], ACTION_ORDER.index(c["actionId"])))["actionId"]
 
-        # Safety penalty: severe penalty if thermal threshold violated
-        safety_penalty = 100.0 if not is_safe else 0.0
-        # Energy cost (lower is better)
-        energy_cost = total_cooling_kwh * 3.5
-        # Temperature penalty above target 25°C
-        temp_cost = max(0.0, final_max_temp - 25.0) * 2.8
-        # Action effort penalty (status_quo = 0, single action = 5, compound = 10)
-        effort_map = {"none": 0.0, "mechanical": 4.0, "chiller": 6.0, "compute": 5.0, "compound": 8.0}
-        effort_cost = effort_map.get(action.get("type", "none"), 5.0)
 
-        total_cost_score = (
-            self.weights["thermalSafety"] * safety_penalty +
-            self.weights["coolingEnergy"] * energy_cost +
-            self.weights["peakTemp"] * temp_cost +
-            self.weights["actionEffort"] * effort_cost
-        )
+def explain_choice(candidates: List[Dict[str, Any]], chosen: str) -> str:
+    done = {c["actionId"]: c["result"] for c in candidates if c.get("result")}
+    if chosen not in done:
+        return "Chosen before the evaluation finished."
+    r = done[chosen]
+    safe = [a for a, v in done.items() if v["safe"]]
+    title = ACTIONS[chosen]["title"]
+    if not r["safe"]:
+        return (f"No option kept the inlet below the limit within 30 minutes. {title} gave the lowest forecast peak "
+                f"({r['peakInlet']:.1f} C).")
+    others = [a for a in safe if a != chosen]
+    text = (f"{title} keeps the forecast peak at {r['peakInlet']:.1f} C (safe) with an energy change of "
+            f"{r['energyChangePercent']:+.1f} % and the lowest cost score ({r['costScore']:.2f})")
+    if others:
+        best_other = min(others, key=lambda a: done[a]["costScore"])
+        text += f"; the next best safe option, {ACTIONS[best_other]['title']}, scored {done[best_other]['costScore']:.2f}"
+    unsafe = [ACTIONS[a]["title"] for a, v in done.items() if not v["safe"]]
+    if unsafe:
+        text += f". Unsafe options: {', '.join(unsafe)}"
+    return text + "."
 
-        return {
-            "actionId": action["id"],
-            "title": action["title"],
-            "type": action.get("type", "none"),
-            "description": action["description"],
-            "peakTemp": round(final_max_temp, 2),
-            "coolingEnergyKWh": round(total_cooling_kwh, 3),
-            "energyDeltaPercent": energy_delta_pct,
-            "isSafe": is_safe,
-            "slaViolations": sla_violations,
-            "costScore": round(total_cost_score, 2),
-            "tempsTimeline": temps_timeline,
-            "isRecommended": False,
-        }
 
-    def evaluate_all(self, base_twin, horizon_steps: int = 15) -> Dict[str, Any]:
-        """
-        Evaluate all candidate interventions.
-        Enforces prioritization:
-          1. Thermal Safety (MUST be Safe)
-          2. Energy Efficiency (Lowest cooling energy among safe)
-          3. Minimal Peak Temp
-          4. Minimal Action Effort
-        """
-        # First compute baseline energy of status quo
-        status_quo_clone = base_twin.clone()
-        sq_energy_kwh = 0.0
-        for _ in range(horizon_steps):
-            s = status_quo_clone.step(dt=60.0)
-            sq_energy_kwh += s["coolingPower"] * (60.0 / 3600.0)
-
-        evaluations = []
-        for action in CANDIDATE_INTERVENTIONS:
-            ev = self.simulate_counterfactual_branch(
-                base_twin, action, horizon_steps=horizon_steps, baseline_kwh=sq_energy_kwh
-            )
-            evaluations.append(ev)
-
-        # Sort: Safe interventions first (ordered by cost score), then Unsafe ones
-        safe_evals = [e for e in evaluations if e["isSafe"]]
-        unsafe_evals = [e for e in evaluations if not e["isSafe"]]
-
-        safe_evals.sort(key=lambda e: e["costScore"])
-        unsafe_evals.sort(key=lambda e: e["costScore"])
-
-        ranked = safe_evals + unsafe_evals
-
-        if safe_evals:
-            safe_evals[0]["isRecommended"] = True
-            recommended = safe_evals[0]
-        else:
-            # If all are unsafe under extreme stress, recommend the least unsafe
-            ranked[0]["isRecommended"] = True
-            recommended = ranked[0]
-
-        return {
-            "recommendedAction": recommended,
-            "allEvaluations": ranked,
-            "totalEvaluated": len(ranked),
-            "safeCount": len(safe_evals),
-            "unsafeCount": len(unsafe_evals),
-            "statusQuoBaselineKWh": round(sq_energy_kwh, 3),
-        }
-
-    def run_counterfactual_evaluation(self, base_twin):
-        return self.evaluate_all(base_twin)
+def tune_cooling(twin, limit: float) -> Dict[str, Any]:
+    """Pick setpoint and CRAH airflow with the lowest energy that keeps a 2.0 K margin."""
+    sp0, cr0 = twin.supply_setpoint, twin.crah_fraction
+    best = None
+    fallback = None
+    for dsp in (-1.0, 0.0, 0.5, 1.0):
+        sp = min(P.SETPOINT_MAX_C, max(P.SETPOINT_MIN_C, sp0 + dsp))
+        for dcr in (-0.05, 0.0, 0.05):
+            cr = min(P.CRAH_FRACTION_MAX, max(P.CRAH_FRACTION_MIN, cr0 + dcr))
+            res = simulate_branch(twin, {"setpoint": sp, "crah": cr, "migrations": [], "cap": None},
+                                  horizon_s=P.TUNER_HORIZON_S, dt=P.BRANCH_DT_S)
+            cand = (sp, cr, res)
+            if res["peakInlet"] <= limit - P.PREDICTIVE_SAFETY_MARGIN_K:
+                if best is None or res["energyKwh"] < best[2]["energyKwh"] - 1e-9:
+                    best = cand
+            if fallback is None or res["peakInlet"] < fallback[2]["peakInlet"] - 1e-9:
+                fallback = cand
+    sp, cr, res = best if best is not None else fallback
+    return {"setpoint": round(sp, 2), "crah": round(cr, 3), "peakInlet": res["peakInlet"],
+            "energyKwh": res["energyKwh"], "withinMargin": best is not None}
