@@ -28,3 +28,8 @@ Thumbs.db
 # Logs & temp
 *.log
 scratch/
+
+# Generated at runtime
+.pytest_cache/
+artifacts/
+backend/data/runs/

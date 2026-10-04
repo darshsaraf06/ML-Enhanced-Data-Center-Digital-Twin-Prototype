@@ -1,18 +1,20 @@
 """
-Weather and Environmental Engine for Data Center Digital Twin.
-Simulates thermodynamic psychrometric effects of ambient temperature and humidity
-on chiller lift, heat rejection, cooling tower wet-bulb approach, and envelope heat leakage.
+Climate engine: outside dry-bulb temperature, humidity and wet-bulb for the twin.
+
+Each climate profile has a daily cycle (cosine with the peak at 15:00) and a small
+seeded random walk, so runs with the same seed see identical weather.
+Operators can override temperature or humidity during a Simulation run.
 """
 
 import math
-from typing import Dict, Any
+from typing import Any, Dict, Optional
+
+import numpy as np
 
 
 def calculate_wet_bulb(t_dry: float, rh: float) -> float:
-    """
-    Calculate wet-bulb temperature using Stull's empirical psychrometric formula (°C).
-    Valid for RH between 1% and 99% and temperatures between -20°C and 50°C.
-    """
+    """Wet-bulb temperature (C) using Stull's (2011) empirical formula.
+    Valid for RH 5-99 % and -20 to 50 C."""
     rh = max(1.0, min(99.0, rh))
     tw = (
         t_dry * math.atan(0.151977 * math.sqrt(rh + 8.313659))
@@ -21,116 +23,93 @@ def calculate_wet_bulb(t_dry: float, rh: float) -> float:
         + 0.00391838 * (rh ** 1.5) * math.atan(0.023101 * rh)
         - 4.686035
     )
-    return round(tw, 2)
+    return round(min(tw, t_dry), 2)
 
 
 def calculate_air_enthalpy(t_dry: float, rh: float) -> float:
-    """Approximate moist air enthalpy (kJ/kg)."""
-    # Saturation vapor pressure (kPa) via Magnus formula
+    """Approximate moist air enthalpy (kJ/kg dry air)."""
     es = 0.61078 * math.exp((17.27 * t_dry) / (t_dry + 237.3))
-    # Actual vapor pressure
     e = (rh / 100.0) * es
-    # Humidity ratio W (kg water / kg dry air) at standard pressure 101.325 kPa
     w = 0.622 * e / (101.325 - e)
-    # Enthalpy h = 1.006 * T + W * (2501 + 1.86 * T)
-    h = 1.006 * t_dry + w * (2501.0 + 1.86 * t_dry)
-    return round(h, 2)
+    return round(1.006 * t_dry + w * (2501.0 + 1.86 * t_dry), 2)
 
 
-WEATHER_PRESETS: Dict[str, Dict[str, Any]] = {
-    "normal": {
-        "id": "normal",
-        "name": "Normal Ambient",
-        "ambientTemp": 24.0,
-        "humidity": 50.0,
-        "description": "Standard temperate day. Optimal chiller operation, low ambient thermal infiltration.",
-        "icon": "🌤️",
-        "copMultiplier": 1.0,
+CLIMATES: Dict[str, Dict[str, Any]] = {
+    "temperate": {
+        "id": "temperate", "name": "Temperate",
+        "meanTemp": 24.0, "dailySwing": 4.0, "humidity": 60.0,
+        "description": "Mild conditions similar to an inland Indian plateau city. Chillers work efficiently.",
     },
-    "hot": {
-        "id": "hot",
-        "name": "Hot Weather",
-        "ambientTemp": 35.0,
-        "humidity": 70.0,
-        "description": "Subtropical summer heat. Elevated chiller condenser lift, higher ambient infiltration.",
-        "icon": "☀️",
-        "copMultiplier": 0.82,
+    "coastal_monsoon": {
+        "id": "coastal_monsoon", "name": "Coastal monsoon",
+        "meanTemp": 30.0, "dailySwing": 3.0, "humidity": 80.0,
+        "description": "Warm and very humid. High wet-bulb temperature makes the cooling tower and chiller work harder and use more water.",
+    },
+    "hot_desert": {
+        "id": "hot_desert", "name": "Hot desert",
+        "meanTemp": 38.0, "dailySwing": 7.0, "humidity": 18.0,
+        "description": "Very hot but dry. Wet-bulb stays moderate, so a water-cooled plant copes, but water evaporation rises.",
+    },
+    "nordic_cold": {
+        "id": "nordic_cold", "name": "Nordic cold",
+        "meanTemp": 4.0, "dailySwing": 3.0, "humidity": 75.0,
+        "description": "Cold outside air allows the cooling tower to cool the water directly (free cooling); chillers mostly rest.",
     },
     "extreme_heat": {
-        "id": "extreme_heat",
-        "name": "Extreme Heatwave",
-        "ambientTemp": 42.0,
-        "humidity": 80.0,
-        "description": "Severe heat dome stress. High wet-bulb temperature severely penalises cooling tower heat rejection.",
-        "icon": "🔥",
-        "copMultiplier": 0.65,
-    },
-    "cool": {
-        "id": "cool",
-        "name": "Cool Weather",
-        "ambientTemp": 15.0,
-        "humidity": 45.0,
-        "description": "Cool ambient allowing partial free-cooling (economiser) mode and maximal chiller COP.",
-        "icon": "❄️",
-        "copMultiplier": 1.18,
-    },
-    "high_humidity": {
-        "id": "high_humidity",
-        "name": "High Humidity",
-        "ambientTemp": 27.0,
-        "humidity": 90.0,
-        "description": "High ambient moisture content. Limits evaporative cooling tower delta-T without extreme dry-bulb heat.",
-        "icon": "💧",
-        "copMultiplier": 0.88,
+        "id": "extreme_heat", "name": "Extreme humid heat",
+        "meanTemp": 38.0, "dailySwing": 4.0, "humidity": 55.0,
+        "description": "Pre-monsoon heat with high humidity. Wet-bulb near 30 C reduces chiller capacity; hotspots appear when workload is high.",
     },
 }
 
+DEFAULT_CLIMATE = "temperate"
+START_HOUR = 12.0      # simulated runs start at 12:00 local time
 
-class WeatherEngine:
-    def __init__(self, preset: str = "normal"):
-        self.preset_id = preset
-        self.ambient_temp = 24.0
-        self.humidity = 50.0
-        self.load_preset(preset)
 
-    def load_preset(self, preset_id: str):
-        if preset_id in WEATHER_PRESETS:
-            p = WEATHER_PRESETS[preset_id]
-            self.preset_id = preset_id
-            self.ambient_temp = float(p["ambientTemp"])
-            self.humidity = float(p["humidity"])
+class ClimateEngine:
+    def __init__(self, climate_id: str = DEFAULT_CLIMATE, seed: int = 42):
+        self.climate_id = climate_id if climate_id in CLIMATES else DEFAULT_CLIMATE
+        self.rng = np.random.default_rng(seed + 1009)
+        self.noise = 0.0
+        self.temp_override: Optional[float] = None
+        self.humidity_override: Optional[float] = None
+        self.temp_delta = 0.0          # from events (heatwave, smoke)
+        self.humidity_set: Optional[float] = None   # from events (cyclone)
+        self.outside_temp = CLIMATES[self.climate_id]["meanTemp"]
+        self.humidity = CLIMATES[self.climate_id]["humidity"]
+        self.wet_bulb = calculate_wet_bulb(self.outside_temp, self.humidity)
 
-    def set_custom(self, ambient_temp: float, humidity: float):
-        self.preset_id = "custom"
-        self.ambient_temp = round(float(ambient_temp), 1)
-        self.humidity = round(float(humidity), 1)
+    def set_climate(self, climate_id: str):
+        if climate_id in CLIMATES:
+            self.climate_id = climate_id
 
-    @property
-    def wet_bulb_temp(self) -> float:
-        return calculate_wet_bulb(self.ambient_temp, self.humidity)
+    def update(self, t_seconds: float):
+        """Advance the weather to simulated time t (call once per second)."""
+        c = CLIMATES[self.climate_id]
+        hour = (START_HOUR + t_seconds / 3600.0) % 24.0
+        daily = c["dailySwing"] * math.cos(2.0 * math.pi * (hour - 15.0) / 24.0)
+        # slow seeded random walk with mean reversion, std about 0.6 C
+        self.noise += -self.noise / 1800.0 + 0.035 * float(self.rng.standard_normal())
+        base_t = c["meanTemp"] + daily + self.noise
+        t = self.temp_override if self.temp_override is not None else base_t
+        t += self.temp_delta
+        # relative humidity falls as the day warms
+        rh = c["humidity"] - 1.5 * daily
+        if self.humidity_override is not None:
+            rh = self.humidity_override
+        if self.humidity_set is not None:
+            rh = self.humidity_set
+        self.outside_temp = t
+        self.humidity = max(5.0, min(99.0, rh))
+        self.wet_bulb = calculate_wet_bulb(self.outside_temp, self.humidity)
 
-    @property
-    def enthalpy_kj_kg(self) -> float:
-        return calculate_air_enthalpy(self.ambient_temp, self.humidity)
-
-    def get_cop_derate_factor(self) -> float:
-        """
-        Thermodynamic COP factor for chillers based on wet-bulb lift.
-        Standard baseline: 24°C dry bulb, 50% RH -> Twb ~ 17°C -> factor 1.0
-        For each degree of wet-bulb rise above 17°C, cooling COP drops ~ 2.4%.
-        """
-        twb = self.wet_bulb_temp
-        delta = twb - 17.0
-        factor = 1.0 - (delta * 0.024)
-        return max(0.45, min(1.30, round(factor, 3)))
-
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict[str, Any]:
         return {
-            "presetId": self.preset_id,
-            "ambientTemp": self.ambient_temp,
-            "humidity": self.humidity,
-            "wetBulbTemp": self.wet_bulb_temp,
-            "enthalpyKjKg": self.enthalpy_kj_kg,
-            "copMultiplier": self.get_cop_derate_factor(),
-            "presets": list(WEATHER_PRESETS.values()),
+            "climateId": self.climate_id,
+            "climateName": CLIMATES[self.climate_id]["name"],
+            "outsideTemp": round(self.outside_temp, 2),
+            "humidity": round(self.humidity, 1),
+            "wetBulb": round(self.wet_bulb, 2),
+            "tempOverride": self.temp_override,
+            "humidityOverride": self.humidity_override,
         }

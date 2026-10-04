@@ -1,0 +1,1438 @@
+{
+  "rows": 199680,
+  "columns": [
+    {
+      "name": "run_id",
+      "description": "Simulation run number"
+    },
+    {
+      "name": "split",
+      "description": "train, test_chronological or heldout_scenario"
+    },
+    {
+      "name": "climate",
+      "description": "Climate profile of the run"
+    },
+    {
+      "name": "policy",
+      "description": "Cooling control policy used"
+    },
+    {
+      "name": "events",
+      "description": "Events scheduled in the run"
+    },
+    {
+      "name": "time_s",
+      "description": "Simulated time (s)"
+    },
+    {
+      "name": "rack",
+      "description": "Rack code"
+    },
+    {
+      "name": "inlet",
+      "description": "Current inlet temperature (C)"
+    },
+    {
+      "name": "d_inlet_60",
+      "description": "Inlet change over the last 60 s (K)"
+    },
+    {
+      "name": "d_inlet_300",
+      "description": "Inlet change over the last 5 min (K)"
+    },
+    {
+      "name": "exhaust",
+      "description": "Current exhaust temperature (C)"
+    },
+    {
+      "name": "util",
+      "description": "Rack utilization (%)"
+    },
+    {
+      "name": "d_util_300",
+      "description": "Utilization change over the last 5 min (points)"
+    },
+    {
+      "name": "power_frac",
+      "description": "Rack power as a share of its maximum"
+    },
+    {
+      "name": "power_kw",
+      "description": "Rack power (kW)"
+    },
+    {
+      "name": "airflow_ratio",
+      "description": "CRAH airflow divided by server airflow demand"
+    },
+    {
+      "name": "recirc",
+      "description": "Recirculation share at the rack inlet"
+    },
+    {
+      "name": "supply",
+      "description": "Supply air temperature (C)"
+    },
+    {
+      "name": "setpoint",
+      "description": "Supply air setpoint (C)"
+    },
+    {
+      "name": "d_supply_300",
+      "description": "Supply air change over the last 5 min (K)"
+    },
+    {
+      "name": "capacity_margin",
+      "description": "Spare cooling capacity as a share of design IT power"
+    },
+    {
+      "name": "outside",
+      "description": "Outside dry-bulb temperature (C)"
+    },
+    {
+      "name": "wet_bulb",
+      "description": "Outside wet-bulb temperature (C)"
+    },
+    {
+      "name": "zone_b",
+      "description": "Rack is in zone B (1) or A (0)"
+    },
+    {
+      "name": "row_end",
+      "description": "Rack is at the end of a row (1) or not (0)"
+    },
+    {
+      "name": "crah_fraction",
+      "description": "CRAH airflow command (share of design)"
+    },
+    {
+      "name": "inlet_gap",
+      "description": "Steady-state inlet the air is mixing toward, minus current inlet (K)"
+    },
+    {
+      "name": "supply_rate",
+      "description": "Current rate of change of supply air (K per minute)"
+    },
+    {
+      "name": "supply_over_setpoint",
+      "description": "Supply air minus setpoint (K)"
+    },
+    {
+      "name": "exhaust_rise",
+      "description": "Exhaust minus inlet temperature (K)"
+    },
+    {
+      "name": "chiller_status",
+      "description": "Chiller availability reported by the plant (0 to 1)"
+    },
+    {
+      "name": "crah_status",
+      "description": "CRAH airflow availability reported by the units (0 to 1)"
+    },
+    {
+      "name": "inlet_t+5min",
+      "description": "Actual inlet temperature 5 minutes later (C), target"
+    },
+    {
+      "name": "inlet_t+10min",
+      "description": "Actual inlet temperature 10 minutes later (C), target"
+    },
+    {
+      "name": "inlet_t+15min",
+      "description": "Actual inlet temperature 15 minutes later (C), target"
+    },
+    {
+      "name": "inlet_t+30min",
+      "description": "Actual inlet temperature 30 minutes later (C), target"
+    },
+    {
+      "name": "inlet_t+60min",
+      "description": "Actual inlet temperature 60 minutes later (C), target"
+    }
+  ],
+  "runs": [
+    {
+      "runId": 1,
+      "split": "train_run",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 10,
+      "scale": "large",
+      "seed": 1000,
+      "events": [
+        "Wildfire smoke",
+        "CRAH fan degradation"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 2,
+      "split": "train_run",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1017,
+      "events": [
+        "Containment breach",
+        "Power loss"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 3,
+      "split": "train_run",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 12,
+      "scale": "small",
+      "seed": 1034,
+      "events": [
+        "Workload spike",
+        "Containment breach",
+        "Heatwave",
+        "Power loss"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 4,
+      "split": "train_run",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 6,
+      "scale": "medium",
+      "seed": 1051,
+      "events": [
+        "CRAH fan degradation",
+        "Workload spike",
+        "Wildfire smoke"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 5,
+      "split": "train_run",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 10,
+      "scale": "small",
+      "seed": 1068,
+      "events": [
+        "Containment breach",
+        "Heatwave",
+        "Heatwave"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 6,
+      "split": "train_run",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 12,
+      "scale": "medium",
+      "seed": 1085,
+      "events": [
+        "Rack overload",
+        "Heatwave",
+        "Containment breach"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 7,
+      "split": "train_run",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 10,
+      "scale": "small",
+      "seed": 1102,
+      "events": [
+        "Rack overload",
+        "Workload spike"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 8,
+      "split": "train_run",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 8,
+      "scale": "small",
+      "seed": 1119,
+      "events": [
+        "Containment breach",
+        "CRAH fan degradation"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 9,
+      "split": "train_run",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1136,
+      "events": [
+        "Cooling failure",
+        "Workload spike"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 10,
+      "split": "train_run",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 10,
+      "scale": "small",
+      "seed": 1153,
+      "events": [
+        "Power loss",
+        "Earthquake",
+        "Rack overload"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 11,
+      "split": "train_run",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 10,
+      "scale": "large",
+      "seed": 1170,
+      "events": [
+        "CRAH fan degradation",
+        "Containment breach",
+        "Power loss"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 12,
+      "split": "train_run",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 6,
+      "scale": "medium",
+      "seed": 1187,
+      "events": [
+        "Earthquake",
+        "Heatwave",
+        "Containment breach"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 13,
+      "split": "train_run",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 6,
+      "scale": "large",
+      "seed": 1204,
+      "events": [
+        "Earthquake",
+        "Workload spike",
+        "Wildfire smoke",
+        "Containment breach"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 14,
+      "split": "train_run",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 10,
+      "scale": "medium",
+      "seed": 1221,
+      "events": [
+        "CRAH fan degradation",
+        "Earthquake"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 15,
+      "split": "train_run",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 10,
+      "scale": "medium",
+      "seed": 1238,
+      "events": [
+        "Earthquake",
+        "Cooling failure",
+        "Wildfire smoke",
+        "Power loss"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 16,
+      "split": "train_run",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 6,
+      "scale": "medium",
+      "seed": 1255,
+      "events": [
+        "Wildfire smoke",
+        "CRAH fan degradation"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 17,
+      "split": "train_run",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 6,
+      "scale": "small",
+      "seed": 1272,
+      "events": [
+        "Heatwave",
+        "Earthquake",
+        "Workload spike"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 18,
+      "split": "train_run",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 8,
+      "scale": "large",
+      "seed": 1289,
+      "events": [
+        "Workload spike",
+        "CRAH fan degradation",
+        "Rack overload",
+        "Rack overload"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 19,
+      "split": "train_run",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 8,
+      "scale": "small",
+      "seed": 1306,
+      "events": [
+        "Rack overload",
+        "Wildfire smoke"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 20,
+      "split": "train_run",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 12,
+      "scale": "medium",
+      "seed": 1323,
+      "events": [
+        "Rack overload",
+        "Workload spike",
+        "Power loss",
+        "Earthquake"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 21,
+      "split": "train_run",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 10,
+      "scale": "small",
+      "seed": 1340,
+      "events": [
+        "Workload spike",
+        "Cooling failure",
+        "Heatwave",
+        "Power loss"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 22,
+      "split": "train_run",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 10,
+      "scale": "large",
+      "seed": 1357,
+      "events": [
+        "Workload spike",
+        "Heatwave"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 23,
+      "split": "train_run",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 8,
+      "scale": "large",
+      "seed": 1374,
+      "events": [
+        "Wildfire smoke",
+        "Workload spike",
+        "Wildfire smoke"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 24,
+      "split": "train_run",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1391,
+      "events": [
+        "CRAH fan degradation",
+        "Workload spike"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 25,
+      "split": "train_run",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1408,
+      "events": [
+        "CRAH fan degradation",
+        "Containment breach",
+        "CRAH fan degradation"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 26,
+      "split": "train_run",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 8,
+      "scale": "small",
+      "seed": 1425,
+      "events": [
+        "Rack overload",
+        "Workload spike",
+        "Cooling failure",
+        "Heatwave"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 27,
+      "split": "train_run",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 10,
+      "scale": "medium",
+      "seed": 1442,
+      "events": [
+        "Cooling failure",
+        "CRAH fan degradation"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 28,
+      "split": "train_run",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 12,
+      "scale": "small",
+      "seed": 1459,
+      "events": [
+        "Wildfire smoke",
+        "Power loss",
+        "Cooling failure"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 29,
+      "split": "train_run",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1476,
+      "events": [
+        "Wildfire smoke",
+        "Wildfire smoke",
+        "Cooling failure",
+        "Heatwave"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 30,
+      "split": "train_run",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 12,
+      "scale": "medium",
+      "seed": 1493,
+      "events": [
+        "Earthquake",
+        "Cooling failure",
+        "Containment breach",
+        "Workload spike"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 31,
+      "split": "train_run",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 12,
+      "scale": "small",
+      "seed": 1510,
+      "events": [
+        "Containment breach",
+        "Wildfire smoke"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 32,
+      "split": "train_run",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 8,
+      "scale": "small",
+      "seed": 1527,
+      "events": [
+        "Earthquake",
+        "Power loss",
+        "Earthquake"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 33,
+      "split": "train_run",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1544,
+      "events": [
+        "Wildfire smoke",
+        "Containment breach",
+        "Earthquake"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 34,
+      "split": "train_run",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1561,
+      "events": [
+        "Wildfire smoke",
+        "Containment breach",
+        "Power loss"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 35,
+      "split": "train_run",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 10,
+      "scale": "large",
+      "seed": 1578,
+      "events": [
+        "Workload spike",
+        "Wildfire smoke",
+        "Workload spike",
+        "Heatwave"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 36,
+      "split": "train_run",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 6,
+      "scale": "medium",
+      "seed": 1595,
+      "events": [
+        "CRAH fan degradation",
+        "CRAH fan degradation"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 37,
+      "split": "train_run",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 6,
+      "scale": "small",
+      "seed": 1612,
+      "events": [
+        "Power loss",
+        "Heatwave"
+      ],
+      "operatorDisturbances": 3
+    },
+    {
+      "runId": 38,
+      "split": "train_run",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1629,
+      "events": [
+        "Wildfire smoke",
+        "Cooling failure",
+        "Wildfire smoke"
+      ],
+      "operatorDisturbances": 5
+    },
+    {
+      "runId": 39,
+      "split": "train_run",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 10,
+      "scale": "small",
+      "seed": 1646,
+      "events": [
+        "CRAH fan degradation",
+        "Wildfire smoke",
+        "Containment breach",
+        "CRAH fan degradation"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 40,
+      "split": "train_run",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 6,
+      "scale": "medium",
+      "seed": 1663,
+      "events": [
+        "Heatwave",
+        "Wildfire smoke",
+        "Cooling failure"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 41,
+      "split": "heldout_scenario",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 6,
+      "scale": "medium",
+      "seed": 1680,
+      "events": [
+        "Cyclone",
+        "Flood",
+        "Cyclone",
+        "Power loss"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 42,
+      "split": "heldout_scenario",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 12,
+      "scale": "small",
+      "seed": 1697,
+      "events": [
+        "Flood",
+        "Cyclone",
+        "Flood",
+        "CRAH fan degradation"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 43,
+      "split": "heldout_scenario",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 8,
+      "scale": "large",
+      "seed": 1714,
+      "events": [
+        "Flood",
+        "Cyclone",
+        "Cyclone",
+        "Cyclone",
+        "Rack overload"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 44,
+      "split": "heldout_scenario",
+      "climate": "nordic_cold",
+      "policy": "random",
+      "racks": 8,
+      "scale": "small",
+      "seed": 1731,
+      "events": [
+        "Cyclone",
+        "Flood",
+        "Flood",
+        "Earthquake"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 45,
+      "split": "heldout_scenario",
+      "climate": "extreme_heat",
+      "policy": "predictive",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1748,
+      "events": [
+        "Cyclone",
+        "Flood",
+        "Workload spike"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 46,
+      "split": "heldout_scenario",
+      "climate": "temperate",
+      "policy": "fixed",
+      "racks": 6,
+      "scale": "medium",
+      "seed": 1765,
+      "events": [
+        "Cyclone",
+        "Flood",
+        "Flood",
+        "Cyclone",
+        "Power loss"
+      ],
+      "operatorDisturbances": 2
+    },
+    {
+      "runId": 47,
+      "split": "heldout_scenario",
+      "climate": "coastal_monsoon",
+      "policy": "reactive",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1782,
+      "events": [
+        "Flood",
+        "Flood",
+        "Cyclone",
+        "Flood",
+        "Cooling failure"
+      ],
+      "operatorDisturbances": 4
+    },
+    {
+      "runId": 48,
+      "split": "heldout_scenario",
+      "climate": "hot_desert",
+      "policy": "random",
+      "racks": 8,
+      "scale": "medium",
+      "seed": 1799,
+      "events": [
+        "Flood",
+        "Flood",
+        "Flood",
+        "Containment breach"
+      ],
+      "operatorDisturbances": 4
+    }
+  ],
+  "runCount": 48,
+  "runDurationS": 14400,
+  "samplingIntervalS": 30,
+  "simulatedHours": 192.0,
+  "split": {
+    "train": 109472,
+    "testChronological": 59488,
+    "heldoutScenario": 30720,
+    "chronoFraction": 0.65
+  },
+  "heldOutEvents": [
+    "flood",
+    "cyclone"
+  ],
+  "rowsAboveLimit": 46225,
+  "stats": [
+    {
+      "column": "inlet",
+      "mean": 24.957,
+      "std": 7.199,
+      "min": 16.776,
+      "max": 56.948
+    },
+    {
+      "column": "d_inlet_60",
+      "mean": 0.02,
+      "std": 0.428,
+      "min": -13.98,
+      "max": 7.378
+    },
+    {
+      "column": "d_inlet_300",
+      "mean": 0.101,
+      "std": 1.395,
+      "min": -21.151,
+      "max": 17.518
+    },
+    {
+      "column": "exhaust",
+      "mean": 35.961,
+      "std": 7.157,
+      "min": 26.612,
+      "max": 67.445
+    },
+    {
+      "column": "util",
+      "mean": 57.713,
+      "std": 16.072,
+      "min": 4.927,
+      "max": 100.0
+    },
+    {
+      "column": "d_util_300",
+      "mean": 0.082,
+      "std": 8.206,
+      "min": -73.857,
+      "max": 74.587
+    },
+    {
+      "column": "power_frac",
+      "mean": 0.733,
+      "std": 0.104,
+      "min": 0.0,
+      "max": 1.501
+    },
+    {
+      "column": "power_kw",
+      "mean": 6.488,
+      "std": 3.115,
+      "min": 0.0,
+      "max": 21.788
+    },
+    {
+      "column": "airflow_ratio",
+      "mean": 1.225,
+      "std": 0.273,
+      "min": 0.0,
+      "max": 4.763
+    },
+    {
+      "column": "recirc",
+      "mean": 0.073,
+      "std": 0.086,
+      "min": 0.02,
+      "max": 0.85
+    },
+    {
+      "column": "supply",
+      "mean": 23.74,
+      "std": 7.095,
+      "min": 16.545,
+      "max": 45.0
+    },
+    {
+      "column": "setpoint",
+      "mean": 18.85,
+      "std": 2.24,
+      "min": 16.0,
+      "max": 23.972
+    },
+    {
+      "column": "d_supply_300",
+      "mean": 0.098,
+      "std": 0.971,
+      "min": -2.607,
+      "max": 6.588
+    },
+    {
+      "column": "capacity_margin",
+      "mean": 0.106,
+      "std": 0.191,
+      "min": -0.923,
+      "max": 0.771
+    },
+    {
+      "column": "outside",
+      "mean": 31.675,
+      "std": 13.217,
+      "min": 1.992,
+      "max": 54.002
+    },
+    {
+      "column": "wet_bulb",
+      "mean": 22.358,
+      "std": 9.932,
+      "min": 0.81,
+      "max": 43.66
+    },
+    {
+      "column": "zone_b",
+      "mean": 0.5,
+      "std": 0.5,
+      "min": 0.0,
+      "max": 1.0
+    },
+    {
+      "column": "row_end",
+      "mean": 0.462,
+      "std": 0.499,
+      "min": 0.0,
+      "max": 1.0
+    },
+    {
+      "column": "crah_fraction",
+      "mean": 0.885,
+      "std": 0.147,
+      "min": 0.553,
+      "max": 1.2
+    },
+    {
+      "column": "inlet_gap",
+      "mean": 0.009,
+      "std": 0.212,
+      "min": -8.766,
+      "max": 5.974
+    },
+    {
+      "column": "supply_rate",
+      "mean": 0.029,
+      "std": 0.241,
+      "min": -0.83,
+      "max": 2.767
+    },
+    {
+      "column": "supply_over_setpoint",
+      "mean": 4.89,
+      "std": 8.175,
+      "min": -5.489,
+      "max": 29.0
+    },
+    {
+      "column": "exhaust_rise",
+      "mean": 11.003,
+      "std": 0.637,
+      "min": 4.186,
+      "max": 21.31
+    },
+    {
+      "column": "chiller_status",
+      "mean": 0.967,
+      "std": 0.152,
+      "min": 0.0,
+      "max": 1.0
+    },
+    {
+      "column": "crah_status",
+      "mean": 0.959,
+      "std": 0.113,
+      "min": 0.0,
+      "max": 1.0
+    }
+  ],
+  "preview": [
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 30,
+      "rack": "R01",
+      "inlet": 18.455,
+      "d_inlet_60": 0.0,
+      "d_inlet_300": 0.0,
+      "exhaust": 29.455,
+      "util": 42.638,
+      "d_util_300": 1.801,
+      "inlet_t+5min": 18.45,
+      "inlet_t+10min": 18.59,
+      "inlet_t+15min": 18.65,
+      "inlet_t+30min": 18.7,
+      "inlet_t+60min": 18.45
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 6030,
+      "rack": "R01",
+      "inlet": 18.509,
+      "d_inlet_60": -0.004,
+      "d_inlet_300": 0.038,
+      "exhaust": 29.5,
+      "util": 40.295,
+      "d_util_300": -4.357,
+      "inlet_t+5min": 18.46,
+      "inlet_t+10min": 18.45,
+      "inlet_t+15min": 18.47,
+      "inlet_t+30min": 20.19,
+      "inlet_t+60min": 18.53
+    },
+    {
+      "run_id": 1,
+      "split": "test_chronological",
+      "climate": "temperate",
+      "time_s": 12030,
+      "rack": "R01",
+      "inlet": 18.494,
+      "d_inlet_60": -0.003,
+      "d_inlet_300": -0.014,
+      "exhaust": 29.503,
+      "util": 35.829,
+      "d_util_300": 4.019,
+      "inlet_t+5min": 18.52,
+      "inlet_t+10min": 18.49,
+      "inlet_t+15min": 18.49,
+      "inlet_t+30min": 18.46,
+      "inlet_t+60min": null
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 3630,
+      "rack": "R02",
+      "inlet": 18.225,
+      "d_inlet_60": -0.0,
+      "d_inlet_300": -0.0,
+      "exhaust": 29.225,
+      "util": 49.146,
+      "d_util_300": -5.694,
+      "inlet_t+5min": 18.23,
+      "inlet_t+10min": 18.25,
+      "inlet_t+15min": 18.25,
+      "inlet_t+30min": 18.24,
+      "inlet_t+60min": 18.23
+    },
+    {
+      "run_id": 1,
+      "split": "test_chronological",
+      "climate": "temperate",
+      "time_s": 9630,
+      "rack": "R02",
+      "inlet": 18.26,
+      "d_inlet_60": -0.001,
+      "d_inlet_300": 0.003,
+      "exhaust": 29.259,
+      "util": 85.631,
+      "d_util_300": 0.0,
+      "inlet_t+5min": 18.26,
+      "inlet_t+10min": 18.26,
+      "inlet_t+15min": 18.33,
+      "inlet_t+30min": 18.28,
+      "inlet_t+60min": 18.25
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 1230,
+      "rack": "R03",
+      "inlet": 18.312,
+      "d_inlet_60": -0.002,
+      "d_inlet_300": -0.01,
+      "exhaust": 29.315,
+      "util": 41.083,
+      "d_util_300": -5.775,
+      "inlet_t+5min": 18.32,
+      "inlet_t+10min": 18.34,
+      "inlet_t+15min": 18.32,
+      "inlet_t+30min": 18.22,
+      "inlet_t+60min": 18.26
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 7230,
+      "rack": "R03",
+      "inlet": 18.23,
+      "d_inlet_60": -0.008,
+      "d_inlet_300": -0.002,
+      "exhaust": 29.234,
+      "util": 50.823,
+      "d_util_300": 15.755,
+      "inlet_t+5min": 20.14,
+      "inlet_t+10min": 20.19,
+      "inlet_t+15min": 20.05,
+      "inlet_t+30min": 18.26,
+      "inlet_t+60min": 18.29
+    },
+    {
+      "run_id": 1,
+      "split": "test_chronological",
+      "climate": "temperate",
+      "time_s": 13230,
+      "rack": "R03",
+      "inlet": 18.249,
+      "d_inlet_60": 0.001,
+      "d_inlet_300": 0.006,
+      "exhaust": 29.245,
+      "util": 38.427,
+      "d_util_300": -11.65,
+      "inlet_t+5min": 18.23,
+      "inlet_t+10min": 18.23,
+      "inlet_t+15min": 18.24,
+      "inlet_t+30min": null,
+      "inlet_t+60min": null
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 4830,
+      "rack": "R04",
+      "inlet": 18.265,
+      "d_inlet_60": 0.002,
+      "d_inlet_300": 0.012,
+      "exhaust": 29.263,
+      "util": 63.728,
+      "d_util_300": 0.275,
+      "inlet_t+5min": 18.27,
+      "inlet_t+10min": 18.25,
+      "inlet_t+15min": 18.24,
+      "inlet_t+30min": 18.23,
+      "inlet_t+60min": 20.55
+    },
+    {
+      "run_id": 1,
+      "split": "test_chronological",
+      "climate": "temperate",
+      "time_s": 10830,
+      "rack": "R04",
+      "inlet": 18.276,
+      "d_inlet_60": 0.001,
+      "d_inlet_300": -0.002,
+      "exhaust": 29.275,
+      "util": 69.582,
+      "d_util_300": 1.626,
+      "inlet_t+5min": 18.27,
+      "inlet_t+10min": 18.26,
+      "inlet_t+15min": 18.26,
+      "inlet_t+30min": 18.25,
+      "inlet_t+60min": null
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 2430,
+      "rack": "R05",
+      "inlet": 18.537,
+      "d_inlet_60": -0.14,
+      "d_inlet_300": -0.116,
+      "exhaust": 29.632,
+      "util": 58.054,
+      "d_util_300": 14.073,
+      "inlet_t+5min": 18.45,
+      "inlet_t+10min": 18.45,
+      "inlet_t+15min": 18.45,
+      "inlet_t+30min": 18.54,
+      "inlet_t+60min": 18.54
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 8430,
+      "rack": "R05",
+      "inlet": 21.577,
+      "d_inlet_60": 0.041,
+      "d_inlet_300": 0.198,
+      "exhaust": 33.499,
+      "util": 99.68,
+      "d_util_300": 0.0,
+      "inlet_t+5min": 21.34,
+      "inlet_t+10min": 18.54,
+      "inlet_t+15min": 18.55,
+      "inlet_t+30min": 18.56,
+      "inlet_t+60min": 18.52
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 30,
+      "rack": "R06",
+      "inlet": 18.955,
+      "d_inlet_60": 0.0,
+      "d_inlet_300": 0.0,
+      "exhaust": 29.955,
+      "util": 64.564,
+      "d_util_300": -0.633,
+      "inlet_t+5min": 18.95,
+      "inlet_t+10min": 19.09,
+      "inlet_t+15min": 19.16,
+      "inlet_t+30min": 19.2,
+      "inlet_t+60min": 18.95
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 6030,
+      "rack": "R06",
+      "inlet": 19.009,
+      "d_inlet_60": -0.004,
+      "d_inlet_300": 0.038,
+      "exhaust": 30.009,
+      "util": 59.069,
+      "d_util_300": -2.545,
+      "inlet_t+5min": 18.96,
+      "inlet_t+10min": 18.95,
+      "inlet_t+15min": 18.97,
+      "inlet_t+30min": 20.7,
+      "inlet_t+60min": 19.03
+    },
+    {
+      "run_id": 1,
+      "split": "test_chronological",
+      "climate": "temperate",
+      "time_s": 12030,
+      "rack": "R06",
+      "inlet": 18.994,
+      "d_inlet_60": -0.003,
+      "d_inlet_300": -0.013,
+      "exhaust": 29.998,
+      "util": 62.659,
+      "d_util_300": -7.194,
+      "inlet_t+5min": 19.02,
+      "inlet_t+10min": 18.99,
+      "inlet_t+15min": 18.99,
+      "inlet_t+30min": 18.96,
+      "inlet_t+60min": null
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 3630,
+      "rack": "R07",
+      "inlet": 18.725,
+      "d_inlet_60": -0.0,
+      "d_inlet_300": -0.0,
+      "exhaust": 29.725,
+      "util": 49.223,
+      "d_util_300": 0.301,
+      "inlet_t+5min": 18.73,
+      "inlet_t+10min": 18.75,
+      "inlet_t+15min": 18.75,
+      "inlet_t+30min": 18.74,
+      "inlet_t+60min": 18.73
+    },
+    {
+      "run_id": 1,
+      "split": "test_chronological",
+      "climate": "temperate",
+      "time_s": 9630,
+      "rack": "R07",
+      "inlet": 18.76,
+      "d_inlet_60": -0.001,
+      "d_inlet_300": 0.003,
+      "exhaust": 29.76,
+      "util": 60.069,
+      "d_util_300": 5.526,
+      "inlet_t+5min": 18.76,
+      "inlet_t+10min": 18.76,
+      "inlet_t+15min": 18.77,
+      "inlet_t+30min": 18.76,
+      "inlet_t+60min": 18.75
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 1230,
+      "rack": "R08",
+      "inlet": 18.812,
+      "d_inlet_60": -0.002,
+      "d_inlet_300": -0.01,
+      "exhaust": 29.814,
+      "util": 27.827,
+      "d_util_300": -11.345,
+      "inlet_t+5min": 18.82,
+      "inlet_t+10min": 18.84,
+      "inlet_t+15min": 18.82,
+      "inlet_t+30min": 18.72,
+      "inlet_t+60min": 18.76
+    },
+    {
+      "run_id": 1,
+      "split": "train",
+      "climate": "temperate",
+      "time_s": 7230,
+      "rack": "R08",
+      "inlet": 18.73,
+      "d_inlet_60": -0.008,
+      "d_inlet_300": -0.002,
+      "exhaust": 29.734,
+      "util": 34.939,
+      "d_util_300": 4.077,
+      "inlet_t+5min": 20.62,
+      "inlet_t+10min": 20.68,
+      "inlet_t+15min": 20.55,
+      "inlet_t+30min": 18.76,
+      "inlet_t+60min": 18.77
+    },
+    {
+      "run_id": 1,
+      "split": "test_chronological",
+      "climate": "temperate",
+      "time_s": 13230,
+      "rack": "R08",
+      "inlet": 18.749,
+      "d_inlet_60": 0.001,
+      "d_inlet_300": 0.006,
+      "exhaust": 29.744,
+      "util": 35.889,
+      "d_util_300": -0.772,
+      "inlet_t+5min": 18.73,
+      "inlet_t+10min": 18.73,
+      "inlet_t+15min": 18.74,
+      "inlet_t+30min": null,
+      "inlet_t+60min": null
+    }
+  ],
+  "fileBytes": 63471523,
+  "generatedAt": "2026-10-04 12:29:32"
+}

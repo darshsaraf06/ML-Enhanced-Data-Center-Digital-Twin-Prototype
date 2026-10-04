@@ -1,262 +1,194 @@
 """
-Scenario Engine for Data Center Digital Twin.
-Implements the 10 failure/problem scenarios, workload profiles, and arbitrary
-multi-scenario combination stress testing.
+Event engine: time-based disturbances for the digital twin.
+
+Events never overwrite the twin's controls. Each step the engine builds a fresh
+Modifiers object (availability of chillers, CRAH airflow, workload changes, ...)
+from the events that are active at that simulated time. Optimizer actions and
+operator edits live on the twin itself and are therefore never undone by an event.
 """
 
-from typing import Dict, List, Any, Optional
-import copy
+from typing import Any, Dict, List, Optional
+
+import numpy as np
+
+from digital_twin import Modifiers
+
+GPU_TYPES = {"gpu", "infer", "compute"}
 
 
-FAILURE_SCENARIOS: Dict[str, Dict[str, Any]] = {
-    "none": {
-        "id": "none",
-        "name": "Nominal Operation (No Faults)",
-        "category": "nominal",
-        "severity": "INFO",
-        "description": "Standard balanced operation with all CRAH units and server fans running nominally.",
-        "initialConditions": "Nominal load profiles, CRAH supply at 18.0°C, 8500 CFM.",
-        "trigger": "Always active.",
-        "expectedEffect": "Stable temperatures within ASHRAE thermal envelope (20°C - 27°C).",
-        "suggestedDurationSec": 3600,
-    },
-    "ai_workload_spike": {
-        "id": "ai_workload_spike",
-        "name": "AI Workload Spike",
-        "category": "workload",
-        "severity": "WARNING",
-        "description": "Sudden surge in LLM prompt queries and batch inference workloads concentrated on Zone B GPU clusters.",
-        "initialConditions": "Zone B GPU racks 06 and 07 spike to 96% and 98% utilization.",
-        "trigger": "Immediate on scenario activation.",
-        "expectedEffect": "Rapid rise in rack exhaust temp (+6.5°C in ~10 mins); predictive hotspot alert triggered.",
-        "suggestedDurationSec": 1800,
-    },
-    "gpu_training_burst": {
-        "id": "gpu_training_burst",
-        "name": "GPU Training Burst",
-        "category": "workload",
-        "severity": "CRITICAL",
-        "description": "Large sustained multi-node distributed deep learning training job across all compute racks.",
-        "initialConditions": "Racks 04, 05, 06, 07 all driven to 92-100% continuous CPU/GPU TDP.",
-        "trigger": "Continuous heavy matrix multiplication tensor workloads.",
-        "expectedEffect": "Widespread thermal stress across multiple racks simultaneously; CRAH capacity pushed to near 100%.",
-        "suggestedDurationSec": 3600,
-    },
+def _ramp(x: float, x0: float, x1: float) -> float:
+    if x <= x0:
+        return 0.0
+    if x >= x1:
+        return 1.0
+    return (x - x0) / (x1 - x0)
+
+
+EVENT_LIBRARY: Dict[str, Dict[str, Any]] = {
     "cooling_failure": {
-        "id": "cooling_failure",
-        "name": "Cooling Failure (Chiller Trip)",
-        "category": "cooling",
-        "severity": "CRITICAL",
-        "description": "Chiller loop compressor failure causing CRAH supply air temperature to rise from 18°C to 24.5°C.",
-        "initialConditions": "Cooling supply air temperature climbs to 24.5°C; fan airflow drops by 35%.",
-        "trigger": "Mechanical compressor trip.",
-        "expectedEffect": "Inlet air temperatures exceed ASHRAE recommended threshold within 8 minutes; widespread SLA breach.",
-        "suggestedDurationSec": 1800,
+        "name": "Cooling failure", "category": "Cooling", "severity": "Critical", "durationS": 600,
+        "description": "A chiller compressor trips. Chilled-water cooling stops for 8 minutes, then the chiller restarts over 2 minutes.",
+    },
+    "power_loss": {
+        "name": "Power loss", "category": "Power", "severity": "Critical", "durationS": 420,
+        "description": "Utility power is lost. CRAH fans stop for 20 s until generators start; chillers stay locked out for 5 minutes and restart over 2 minutes. IT stays on UPS.",
+    },
+    "heatwave": {
+        "name": "Heatwave", "category": "Environment", "severity": "Warning", "durationS": 2400,
+        "description": "Outside temperature rises by up to 8 C over 10 minutes and stays high for 40 minutes, raising wet-bulb and reducing chiller capacity and efficiency.",
+    },
+    "workload_spike": {
+        "name": "Workload spike", "category": "Workload", "severity": "Warning", "durationS": 900,
+        "description": "A burst of AI and analytics jobs adds 35 utilization points to GPU, inference and compute racks and 10 points elsewhere for 15 minutes.",
+    },
+    "flood": {
+        "name": "Flood", "category": "Environment", "severity": "Critical", "durationS": 1200,
+        "description": "Water ingress takes half of the CRAH units offline and one chilled-water pump set (60 % chiller availability) for 20 minutes.",
+    },
+    "wildfire_smoke": {
+        "name": "Wildfire smoke", "category": "Environment", "severity": "Warning", "durationS": 1800,
+        "description": "Smoke loads filters (CRAH airflow 80 %), free cooling is disabled and outside temperature rises 3 C for 30 minutes.",
+    },
+    "earthquake": {
+        "name": "Earthquake", "category": "Power", "severity": "Critical", "durationS": 900,
+        "description": "Seismic protection shuts down zone B racks for 3 minutes; they restart at full load for 6 minutes. One chiller trips (50 % availability) for 10 minutes.",
+    },
+    "cyclone": {
+        "name": "Cyclone", "category": "Environment", "severity": "Warning", "durationS": 2400,
+        "description": "Humidity reaches 95 %, CRAH airflow drops to 85 %, and two 90 s power dips trip the chillers.",
+    },
+    "containment_breach": {
+        "name": "Containment breach", "category": "Cooling", "severity": "Warning", "durationS": 1200,
+        "description": "Missing blanking panels let hot exhaust leak into the inlets of racks 03 and 04 (25 % extra recirculation) for 20 minutes.",
     },
     "fan_degradation": {
-        "id": "fan_degradation",
-        "name": "Fan Degradation",
-        "category": "mechanical",
-        "severity": "WARNING",
-        "description": "Bearing wear and variable frequency drive degradation reducing effective CRAH airflow by 45%.",
-        "initialConditions": "CRAH airflow reduced from 8500 CFM to 4675 CFM; rack internal fan speeds capped at 60%.",
-        "trigger": "Mechanical wear on CRAH fan motor.",
-        "expectedEffect": "Stagnant hot air recirculates through cold aisle; core temps rise steadily by 0.15°C/min.",
-        "suggestedDurationSec": 2700,
-    },
-    "airflow_blockage": {
-        "id": "airflow_blockage",
-        "name": "Airflow Blockage (Blanking Panel Breach)",
-        "category": "containment",
-        "severity": "WARNING",
-        "description": "Missing blanking panels and physical containment flap failure causing hot exhaust recirculation in Racks 03 & 04.",
-        "initialConditions": "Heat transfer coefficient UA reduced by 55% in Racks 03 and 04 due to recirculating hot air.",
-        "trigger": "Physical containment seal compromise.",
-        "expectedEffect": "Localized hot spots develop in Rack 03 and 04 despite moderate CPU utilization.",
-        "suggestedDurationSec": 1800,
-    },
-    "high_ambient_temp": {
-        "id": "high_ambient_temp",
-        "name": "High Ambient Temperature",
-        "category": "environmental",
-        "severity": "WARNING",
-        "description": "External ambient heat dome raising external temperature to 39.5°C, reducing cooling plant COP.",
-        "initialConditions": "External ambient temp set to 39.5°C; envelope heat infiltration increases by 300%.",
-        "trigger": "Severe meteorological heatwave.",
-        "expectedEffect": "Cooling power consumption surges by 32%; chiller COP drops below 2.8.",
-        "suggestedDurationSec": 3600,
+        "name": "CRAH fan degradation", "category": "Cooling", "severity": "Warning", "durationS": 1500,
+        "description": "Worn CRAH fan drives deliver only 60 % of commanded airflow for 25 minutes.",
     },
     "rack_overload": {
-        "id": "rack_overload",
-        "name": "Rack Overload (Runaway Process)",
-        "category": "workload",
-        "severity": "CRITICAL",
-        "description": "Runaway compute threads and hardware power draw spike on Rack 05 surpassing power density envelope.",
-        "initialConditions": "Rack 05 power surge: CPU load 100%, server power draw elevated by +35% above nominal.",
-        "trigger": "Unconstrained parallel batch process runaway.",
-        "expectedEffect": "Rack 05 temperature accelerates towards critical 34°C threshold within 6 minutes.",
-        "suggestedDurationSec": 1800,
-    },
-    "workload_imbalance": {
-        "id": "workload_imbalance",
-        "name": "Workload Imbalance (Hot Spotting)",
-        "category": "workload",
-        "severity": "WARNING",
-        "description": "Poor orchestrator scheduling concentrating 95% of active microservices onto Racks 06 & 07 while others idle.",
-        "initialConditions": "Racks 06 & 07 at 96% load; Racks 01, 02, 03 at 18-25% load.",
-        "trigger": "Kubernetes node affinity misconfiguration.",
-        "expectedEffect": "Extreme thermal disparity across hall; wasteful over-cooling of idle zones to protect hotspot zone.",
-        "suggestedDurationSec": 2400,
-    },
-    "multiple_rack_hotspot": {
-        "id": "multiple_rack_hotspot",
-        "name": "Multiple Rack Hotspot",
-        "category": "compound",
-        "severity": "CRITICAL",
-        "description": "Concurrently developing thermal plumes across Racks 02, 05, 06, and 07 due to cross-rack thermal coupling.",
-        "initialConditions": "Adjacent racks experience cross-aisle heat leakage; aggregate core temps exceed 31°C.",
-        "trigger": "Combined multi-tenant high load and containment leakage.",
-        "expectedEffect": "Requires multi-action coordinated counterfactual intervention (airflow + load balancing).",
-        "suggestedDurationSec": 3600,
-    },
-    "hardware_degradation": {
-        "id": "hardware_degradation",
-        "name": "Hardware Degradation (Thermal Aging)",
-        "category": "wear",
-        "severity": "WARNING",
-        "description": "Thermal paste pump-out and dust accumulation gradually degrading heat transfer UA over time.",
-        "initialConditions": "Thermal transfer efficiency UA degrades at a continuous rate of -0.01 per 500 simulated seconds.",
-        "trigger": "Long-term thermal degradation over extended operational window.",
-        "expectedEffect": "Progressive upward creep of baseline temperature profile over the simulation.",
-        "suggestedDurationSec": 7200,
+        "name": "Rack overload", "category": "Workload", "severity": "Warning", "durationS": 900,
+        "description": "A runaway process pins rack 05 at 100 % and a faulty power supply adds 2 kW of heat for 15 minutes.",
     },
 }
 
+EVENT_ORDER = ["cooling_failure", "power_loss", "heatwave", "workload_spike", "flood", "wildfire_smoke",
+               "earthquake", "cyclone", "containment_breach", "fan_degradation", "rack_overload"]
 
-WORKLOAD_PRESETS: Dict[str, Dict[str, Any]] = {
-    "baseline": {
-        "id": "baseline",
-        "name": "Standard Mixed Telemetry",
-        "description": "Web, Database, KV-Cache, Analytics, ML clusters running typical diurnal workload.",
-        "loads": [45, 60, 52, 58, 78, 82, 88, 40],
-    },
-    "ai_burst": {
-        "id": "ai_burst",
-        "name": "Heavy AI / Deep Learning",
-        "description": "Compute-bound cluster with heavy GPU training and continuous inference.",
-        "loads": [55, 68, 62, 75, 94, 98, 96, 50],
-    },
-    "balanced": {
-        "id": "balanced",
-        "name": "Optimally Distributed Load",
-        "description": "Evenly partitioned jobs across all 8 racks (55-65% utilization).",
-        "loads": [58, 60, 56, 62, 60, 64, 62, 58],
-    },
-    "idle_night": {
-        "id": "idle_night",
-        "name": "Off-Peak Night Load",
-        "description": "Low demand off-peak profile with minimal compute.",
-        "loads": [25, 30, 28, 32, 35, 40, 38, 22],
-    },
-}
+DEMO_SCRIPT = [("workload_spike", 300), ("cooling_failure", 1500), ("heatwave", 2400)]
 
 
-class ScenarioEngine:
-    def __init__(self):
-        self.active_problem_id = "none"
-        self.active_workload_id = "baseline"
-        self.sim_elapsed_seconds = 0
-        self.active_problem = FAILURE_SCENARIOS["none"]
-        self.active_workload = WORKLOAD_PRESETS["baseline"]
+def apply_event(event_id: str, elapsed: float, m: Modifiers, twin, climate) -> None:
+    """Add the effect of one active event, `elapsed` seconds after it started."""
+    racks = twin.racks
+    if event_id == "cooling_failure":
+        m.chiller_avail *= _ramp(elapsed, 480, 600)
+    elif event_id == "power_loss":
+        if elapsed < 20:
+            m.plant_avail = 0.0
+            m.crah_avail = 0.0
+        m.chiller_avail *= _ramp(elapsed, 300, 420)
+    elif event_id == "heatwave":
+        climate.temp_delta += 8.0 * _ramp(elapsed, 0, 600) * (1.0 - _ramp(elapsed, 2100, 2400))
+    elif event_id == "workload_spike":
+        k = _ramp(elapsed, 0, 60)
+        for r in racks:
+            d = 35.0 if r["type"] in GPU_TYPES else 10.0
+            m.util_delta[r["id"]] = m.util_delta.get(r["id"], 0.0) + d * k
+    elif event_id == "flood":
+        m.crah_avail *= 0.5
+        m.chiller_avail *= 0.6
+    elif event_id == "wildfire_smoke":
+        m.economizer_ok = False
+        m.crah_avail *= 0.8
+        climate.temp_delta += 3.0
+    elif event_id == "earthquake":
+        zone_b = [r["id"] for r in racks if r["zone"] == "B"]
+        if elapsed < 180:
+            m.racks_off.update(zone_b)
+        elif elapsed < 540:
+            for rid in zone_b:
+                m.util_set[rid] = 100.0
+        if elapsed < 600:
+            m.chiller_avail *= 0.5
+    elif event_id == "cyclone":
+        climate.humidity_set = 95.0
+        climate.temp_delta -= 3.0
+        m.crah_avail *= 0.85
+        if 300 <= elapsed < 390 or 1200 <= elapsed < 1290:
+            m.chiller_avail = 0.0
+    elif event_id == "containment_breach":
+        for rid in (3, 4):
+            if rid <= len(racks):
+                m.recirc_add[rid] = m.recirc_add.get(rid, 0.0) + 0.25
+    elif event_id == "fan_degradation":
+        m.crah_avail *= 0.6
+    elif event_id == "rack_overload":
+        rid = 5 if len(racks) >= 5 else len(racks)
+        m.util_set[rid] = 100.0
+        m.heat_add[rid] = m.heat_add.get(rid, 0.0) + 2.0
 
-    def set_problem(self, problem_id: str):
-        if problem_id in FAILURE_SCENARIOS:
-            self.active_problem_id = problem_id
-            self.active_problem = FAILURE_SCENARIOS[problem_id]
 
-    def set_workload(self, workload_id: str):
-        if workload_id in WORKLOAD_PRESETS:
-            self.active_workload_id = workload_id
-            self.active_workload = WORKLOAD_PRESETS[workload_id]
+class EventSchedule:
+    """Seeded list of scheduled events. Deterministic for a given seed and selection."""
 
-    def apply_to_physics(self, physics, elapsed_sec: int = 0):
-        """
-        Mutate physics engine state based on active problem and workload.
-        Can be called repeatedly every timestep to handle progressive degradation.
-        """
-        self.sim_elapsed_seconds = elapsed_sec
+    def __init__(self, selection: Any = "none", duration_s: int = 3600, seed: int = 42, demo: bool = False):
+        self.items: List[Dict[str, Any]] = []
+        if demo:
+            for event_id, start in DEMO_SCRIPT:
+                if start < duration_s:
+                    self.add(event_id, start, source="Demonstration script")
+            return
+        if selection in (None, "none", [], ""):
+            return
+        if selection == "random":
+            rng = np.random.default_rng(seed + 7919)
+            count = max(1, int(round(duration_s / 1800.0)))
+            lo, hi = 300, max(301, duration_s - 600)
+            starts = sorted(int(x) for x in rng.uniform(lo, hi, size=count))
+            for start in starts:
+                event_id = EVENT_ORDER[int(rng.integers(0, len(EVENT_ORDER)))]
+                self.add(event_id, start, source="Random event")
+            return
+        chosen = [selection] if isinstance(selection, str) else list(selection)
+        chosen = [e for e in chosen if e in EVENT_LIBRARY]
+        if not chosen:
+            return
+        first = 600 if duration_s > 1200 else max(60, duration_s // 4)
+        gap = max(300, (duration_s - first - 300) // max(1, len(chosen)))
+        for k, event_id in enumerate(chosen):
+            self.add(event_id, first + k * gap, source="Chosen at setup")
 
-        # 1. Apply baseline workload profile
-        loads = self.active_workload.get("loads", [50] * len(physics.racks))
-        for i, rack in enumerate(physics.racks):
-            if i < len(loads):
-                rack["cpuLoad"] = loads[i]
+    def add(self, event_id: str, start: int, source: str = "Operator") -> Optional[Dict[str, Any]]:
+        if event_id not in EVENT_LIBRARY:
+            return None
+        lib = EVENT_LIBRARY[event_id]
+        item = {"eventId": event_id, "name": lib["name"], "start": int(start),
+                "end": int(start) + int(lib["durationS"]), "source": source,
+                "category": lib["category"], "severity": lib["severity"]}
+        self.items.append(item)
+        self.items.sort(key=lambda e: e["start"])
+        return item
 
-        pid = self.active_problem_id
+    def active(self, t: int) -> List[Dict[str, Any]]:
+        return [e for e in self.items if e["start"] <= t < e["end"]]
 
-        # 2. Apply specific failure problem mutations
-        if pid == "ai_workload_spike":
-            if len(physics.racks) >= 7:
-                physics.racks[5]["cpuLoad"] = 96
-                physics.racks[6]["cpuLoad"] = 98
+    def starting(self, t: int) -> List[Dict[str, Any]]:
+        return [e for e in self.items if e["start"] == t]
 
-        elif pid == "gpu_training_burst":
-            for i in [3, 4, 5, 6]:
-                if i < len(physics.racks):
-                    physics.racks[i]["cpuLoad"] = 97
+    def ending(self, t: int) -> List[Dict[str, Any]]:
+        return [e for e in self.items if e["end"] == t]
 
-        elif pid == "cooling_failure":
-            physics.cooling_supply_temp = 24.5
-            physics.crah_airflow_cfm = 5525.0  # 35% drop
-            physics.chiller_cop = 2.4
+    def modifiers(self, t: int, twin, climate) -> Modifiers:
+        m = Modifiers()
+        climate.temp_delta = 0.0
+        climate.humidity_set = None
+        for e in self.active(t):
+            apply_event(e["eventId"], t - e["start"], m, twin, climate)
+        return m
 
-        elif pid == "fan_degradation":
-            physics.crah_airflow_cfm = 4675.0  # 45% drop
-            for r in physics.racks:
-                r["fanSpeed"] = min(60, r.get("fanSpeed", 70))
+    def to_list(self) -> List[Dict[str, Any]]:
+        return [dict(e) for e in self.items]
 
-        elif pid == "airflow_blockage":
-            if len(physics.racks) >= 4:
-                physics.racks[2]["ua"] = 0.20  # was 0.44
-                physics.racks[3]["ua"] = 0.21  # was 0.46
 
-        elif pid == "high_ambient_temp":
-            physics.ambient_temp = 39.5
-            physics.cooling_supply_temp = 21.8
-
-        elif pid == "rack_overload":
-            if len(physics.racks) >= 5:
-                physics.racks[4]["cpuLoad"] = 100
-                physics.racks[4]["servers"] = 14  # temporary server power surge
-
-        elif pid == "workload_imbalance":
-            if len(physics.racks) >= 7:
-                physics.racks[5]["cpuLoad"] = 97
-                physics.racks[6]["cpuLoad"] = 98
-                physics.racks[0]["cpuLoad"] = 20
-                physics.racks[1]["cpuLoad"] = 22
-                physics.racks[2]["cpuLoad"] = 20
-
-        elif pid == "multiple_rack_hotspot":
-            indices = [1, 4, 5, 6]
-            for idx in indices:
-                if idx < len(physics.racks):
-                    physics.racks[idx]["cpuLoad"] = 92
-                    physics.racks[idx]["fanSpeed"] = 65
-
-        elif pid == "hardware_degradation":
-            # Progressive degradation over time
-            decay = min(0.20, (elapsed_sec / 3600.0) * 0.08)
-            for r in physics.racks:
-                nominal_ua = 0.48 if r.get("zone") == "A" else 0.54
-                r["ua"] = max(0.22, nominal_ua - decay)
-
-    def to_dict(self) -> dict:
-        return {
-            "activeProblemId": self.active_problem_id,
-            "activeProblem": self.active_problem,
-            "activeWorkloadId": self.active_workload_id,
-            "activeWorkload": self.active_workload,
-            "allProblems": list(FAILURE_SCENARIOS.values()),
-            "allWorkloads": list(WORKLOAD_PRESETS.values()),
-        }
+def event_catalog() -> List[Dict[str, Any]]:
+    return [{"id": k, **EVENT_LIBRARY[k]} for k in EVENT_ORDER]

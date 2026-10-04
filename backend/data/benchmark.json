@@ -1,0 +1,4706 @@
+{
+  "generatedAt": "2026-10-04 13:22:18",
+  "seeds": 10,
+  "durationS": 3600,
+  "model": "xgboost",
+  "policies": [
+    "fixed",
+    "reactive",
+    "predictive"
+  ],
+  "metrics": [
+    {
+      "id": "totalKwh",
+      "label": "Total energy",
+      "unit": "kWh"
+    },
+    {
+      "id": "coolingKwh",
+      "label": "Cooling energy",
+      "unit": "kWh"
+    },
+    {
+      "id": "pue",
+      "label": "PUE",
+      "unit": ""
+    },
+    {
+      "id": "waterL",
+      "label": "Water",
+      "unit": "L"
+    },
+    {
+      "id": "carbonKg",
+      "label": "Carbon",
+      "unit": "kg CO2"
+    },
+    {
+      "id": "costInr",
+      "label": "Cost",
+      "unit": "INR"
+    },
+    {
+      "id": "minutesAboveLimit",
+      "label": "Minutes above limit",
+      "unit": "min"
+    },
+    {
+      "id": "hotspotEvents",
+      "label": "Hotspot events",
+      "unit": ""
+    },
+    {
+      "id": "peakInlet",
+      "label": "Peak inlet",
+      "unit": "C"
+    },
+    {
+      "id": "leadTimeMin",
+      "label": "Warning lead time",
+      "unit": "min"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "normal",
+      "name": "Normal day",
+      "climate": "temperate",
+      "events": "none",
+      "policies": {
+        "fixed": {
+          "totalKwh": {
+            "mean": 73.7264,
+            "std": 1.1844,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 20.3824,
+            "std": 0.5805,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.3821,
+            "std": 0.0103,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 114.336,
+            "std": 2.4309,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 52.7883,
+            "std": 0.8482,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 596.67,
+            "std": 9.6107,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 19.041,
+            "std": 0.0213,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "mean": 68.7677,
+            "std": 1.1381,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 15.4238,
+            "std": 0.5404,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.2892,
+            "std": 0.0096,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 106.035,
+            "std": 2.3125,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 49.2377,
+            "std": 0.8149,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 556.504,
+            "std": 9.234,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 22.243,
+            "std": 0.02,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "predictive": {
+          "totalKwh": {
+            "mean": 64.9844,
+            "std": 1.1561,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 11.6406,
+            "std": 0.5617,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.2182,
+            "std": 0.0099,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 95.196,
+            "std": 2.3366,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 46.5288,
+            "std": 0.828,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 525.587,
+            "std": 9.376,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 25.239,
+            "std": 0.2297,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        }
+      },
+      "savings": {
+        "fixed": {
+          "totalKwh": {
+            "difference": {
+              "mean": -8.742,
+              "std": 0.1619,
+              "n": 10
+            },
+            "percent": {
+              "mean": -11.8593,
+              "std": 0.2536,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -8.7418,
+              "std": 0.162,
+              "n": 10
+            },
+            "percent": {
+              "mean": -42.9157,
+              "std": 1.2981,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.1639,
+              "std": 0.0036,
+              "n": 10
+            },
+            "percent": {
+              "mean": -11.8602,
+              "std": 0.2534,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -19.14,
+              "std": 0.664,
+              "n": 10
+            },
+            "percent": {
+              "mean": -16.744,
+              "std": 0.5946,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -6.2595,
+              "std": 0.1159,
+              "n": 10
+            },
+            "percent": {
+              "mean": -11.8597,
+              "std": 0.2536,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -71.083,
+              "std": 1.3332,
+              "n": 10
+            },
+            "percent": {
+              "mean": -11.9153,
+              "std": 0.2567,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 6.198,
+              "std": 0.2376,
+              "n": 10
+            },
+            "percent": {
+              "mean": 32.5514,
+              "std": 1.2638,
+              "n": 10
+            }
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "difference": {
+              "mean": -3.7833,
+              "std": 0.1566,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.5031,
+              "std": 0.2497,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -3.7832,
+              "std": 0.1567,
+              "n": 10
+            },
+            "percent": {
+              "mean": -24.5561,
+              "std": 1.3444,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.071,
+              "std": 0.0032,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.5045,
+              "std": 0.249,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -10.839,
+              "std": 0.6464,
+              "n": 10
+            },
+            "percent": {
+              "mean": -10.2253,
+              "std": 0.6305,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -2.7089,
+              "std": 0.1121,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.5032,
+              "std": 0.2498,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -30.917,
+              "std": 1.288,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.5571,
+              "std": 0.2532,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 2.996,
+              "std": 0.2378,
+              "n": 10
+            },
+            "percent": {
+              "mean": 13.4698,
+              "std": 1.0747,
+              "n": 10
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "heatwave",
+      "name": "Heatwave",
+      "climate": "temperate",
+      "events": [
+        "heatwave"
+      ],
+      "policies": {
+        "fixed": {
+          "totalKwh": {
+            "mean": 77.0436,
+            "std": 1.2508,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 23.6996,
+            "std": 0.6187,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.4443,
+            "std": 0.0104,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 126.251,
+            "std": 2.677,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 55.1629,
+            "std": 0.8956,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 623.922,
+            "std": 10.1573,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 19.041,
+            "std": 0.0213,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "mean": 71.9093,
+            "std": 1.2042,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 18.5653,
+            "std": 0.5759,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.348,
+            "std": 0.0098,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 117.262,
+            "std": 2.5541,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 51.4872,
+            "std": 0.862,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 582.309,
+            "std": 9.776,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 22.243,
+            "std": 0.02,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "predictive": {
+          "totalKwh": {
+            "mean": 67.9234,
+            "std": 1.2335,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 14.5796,
+            "std": 0.5816,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.2733,
+            "std": 0.0096,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 105.593,
+            "std": 2.5179,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 48.6332,
+            "std": 0.8834,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 549.723,
+            "std": 10.0092,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 25.238,
+            "std": 0.2289,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        }
+      },
+      "savings": {
+        "fixed": {
+          "totalKwh": {
+            "difference": {
+              "mean": -9.1202,
+              "std": 0.1164,
+              "n": 10
+            },
+            "percent": {
+              "mean": -11.8401,
+              "std": 0.2185,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -9.12,
+              "std": 0.1161,
+              "n": 10
+            },
+            "percent": {
+              "mean": -38.5009,
+              "std": 0.9342,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.171,
+              "std": 0.0035,
+              "n": 10
+            },
+            "percent": {
+              "mean": -11.8395,
+              "std": 0.2192,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -20.658,
+              "std": 0.2963,
+              "n": 10
+            },
+            "percent": {
+              "mean": -16.3667,
+              "std": 0.2845,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -6.5297,
+              "std": 0.0831,
+              "n": 10
+            },
+            "percent": {
+              "mean": -11.8395,
+              "std": 0.2184,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -74.199,
+              "std": 0.9438,
+              "n": 10
+            },
+            "percent": {
+              "mean": -11.8947,
+              "std": 0.2186,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 6.197,
+              "std": 0.2369,
+              "n": 10
+            },
+            "percent": {
+              "mean": 32.5461,
+              "std": 1.2602,
+              "n": 10
+            }
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "difference": {
+              "mean": -3.9859,
+              "std": 0.1128,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.5448,
+              "std": 0.1977,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -3.9857,
+              "std": 0.1128,
+              "n": 10
+            },
+            "percent": {
+              "mean": -21.4867,
+              "std": 0.888,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.0747,
+              "std": 0.0027,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.5443,
+              "std": 0.1977,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -11.669,
+              "std": 0.2291,
+              "n": 10
+            },
+            "percent": {
+              "mean": -9.9547,
+              "std": 0.2601,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -2.854,
+              "std": 0.081,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.545,
+              "std": 0.1984,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -32.586,
+              "std": 0.9168,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.5979,
+              "std": 0.1985,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 2.995,
+              "std": 0.2371,
+              "n": 10
+            },
+            "percent": {
+              "mean": 13.4653,
+              "std": 1.0716,
+              "n": 10
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "cooling_failure",
+      "name": "Chiller trip",
+      "climate": "temperate",
+      "events": [
+        "cooling_failure"
+      ],
+      "policies": {
+        "fixed": {
+          "totalKwh": {
+            "mean": 73.8889,
+            "std": 1.1738,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 20.5448,
+            "std": 0.5672,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.3852,
+            "std": 0.0101,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 113.638,
+            "std": 2.3449,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 52.9043,
+            "std": 0.8404,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 597.928,
+            "std": 9.5215,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 6.465,
+            "std": 1.6453,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 8.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 28.27,
+            "std": 0.3107,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "episodes": {
+            "mean": 1.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "mean": 73.585,
+            "std": 1.5275,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 20.2412,
+            "std": 0.8228,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.3794,
+            "std": 0.012,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 112.563,
+            "std": 2.7842,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 52.687,
+            "std": 1.0937,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 595.434,
+            "std": 12.3764,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 18.645,
+            "std": 2.3742,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 8.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 31.191,
+            "std": 0.2882,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": 1.12,
+            "std": 0.027,
+            "n": 10
+          },
+          "episodes": {
+            "mean": 1.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "predictive": {
+          "totalKwh": {
+            "mean": 68.6674,
+            "std": 1.5488,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 15.3236,
+            "std": 0.8194,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.2872,
+            "std": 0.0123,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 102.842,
+            "std": 3.7212,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 49.1658,
+            "std": 1.109,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 555.51,
+            "std": 12.6092,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 19.812,
+            "std": 2.0639,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 8.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 31.97,
+            "std": 0.314,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": 3.9583,
+            "std": 0.1318,
+            "n": 10
+          },
+          "episodes": {
+            "mean": 1.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 1.0,
+            "std": 0.0,
+            "n": 10
+          }
+        }
+      },
+      "savings": {
+        "fixed": {
+          "totalKwh": {
+            "difference": {
+              "mean": -5.2215,
+              "std": 0.4354,
+              "n": 10
+            },
+            "percent": {
+              "mean": -7.075,
+              "std": 0.6707,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -5.2212,
+              "std": 0.4352,
+              "n": 10
+            },
+            "percent": {
+              "mean": -25.4487,
+              "std": 2.4156,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.098,
+              "std": 0.0094,
+              "n": 10
+            },
+            "percent": {
+              "mean": -7.0758,
+              "std": 0.6705,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -10.796,
+              "std": 1.8438,
+              "n": 10
+            },
+            "percent": {
+              "mean": -9.5211,
+              "std": 1.7116,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -3.7385,
+              "std": 0.312,
+              "n": 10
+            },
+            "percent": {
+              "mean": -7.0748,
+              "std": 0.671,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -42.418,
+              "std": 3.5906,
+              "n": 10
+            },
+            "percent": {
+              "mean": -7.1026,
+              "std": 0.682,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": 13.347,
+              "std": 0.7561,
+              "n": 10
+            },
+            "percent": {
+              "mean": 215.4354,
+              "std": 41.2899,
+              "n": 10
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 3.7,
+              "std": 0.0082,
+              "n": 10
+            },
+            "percent": {
+              "mean": 13.0894,
+              "std": 0.1333,
+              "n": 10
+            }
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "difference": {
+              "mean": -4.9176,
+              "std": 0.1578,
+              "n": 10
+            },
+            "percent": {
+              "mean": -6.6857,
+              "std": 0.2602,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -4.9176,
+              "std": 0.1581,
+              "n": 10
+            },
+            "percent": {
+              "mean": -24.3274,
+              "std": 1.161,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.0922,
+              "std": 0.0036,
+              "n": 10
+            },
+            "percent": {
+              "mean": -6.6866,
+              "std": 0.2619,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -9.721,
+              "std": 1.3002,
+              "n": 10
+            },
+            "percent": {
+              "mean": -8.6561,
+              "std": 1.2639,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -3.5212,
+              "std": 0.1133,
+              "n": 10
+            },
+            "percent": {
+              "mean": -6.6861,
+              "std": 0.2607,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -39.924,
+              "std": 1.3118,
+              "n": 10
+            },
+            "percent": {
+              "mean": -6.7081,
+              "std": 0.27,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": 1.167,
+              "std": 0.3199,
+              "n": 10
+            },
+            "percent": {
+              "mean": 6.5146,
+              "std": 2.2802,
+              "n": 10
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 0.779,
+              "std": 0.0321,
+              "n": 10
+            },
+            "percent": {
+              "mean": 2.497,
+              "std": 0.0856,
+              "n": 10
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spike_humid",
+      "name": "Workload spike, coastal monsoon",
+      "climate": "coastal_monsoon",
+      "events": [
+        "workload_spike"
+      ],
+      "policies": {
+        "fixed": {
+          "totalKwh": {
+            "mean": 85.1022,
+            "std": 1.1565,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 28.5297,
+            "std": 0.6195,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.5043,
+            "std": 0.0104,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 146.077,
+            "std": 2.5154,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 60.9332,
+            "std": 0.8279,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 689.582,
+            "std": 9.3911,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 21.275,
+            "std": 0.678,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "mean": 79.7187,
+            "std": 1.1696,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 23.1465,
+            "std": 0.6375,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.4091,
+            "std": 0.0105,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 136.504,
+            "std": 2.7134,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 57.0787,
+            "std": 0.8373,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 645.938,
+            "std": 9.5054,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 23.891,
+            "std": 0.6642,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "predictive": {
+          "totalKwh": {
+            "mean": 76.0275,
+            "std": 1.2596,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 19.5614,
+            "std": 0.8496,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.3464,
+            "std": 0.0138,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 124.748,
+            "std": 2.9478,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 54.4357,
+            "std": 0.9019,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 615.705,
+            "std": 10.2432,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 26.257,
+            "std": 0.2481,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": null,
+            "std": null,
+            "n": 0
+          },
+          "episodes": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.3,
+            "std": 0.483,
+            "n": 10
+          }
+        }
+      },
+      "savings": {
+        "fixed": {
+          "totalKwh": {
+            "difference": {
+              "mean": -9.0747,
+              "std": 0.2657,
+              "n": 10
+            },
+            "percent": {
+              "mean": -10.6662,
+              "std": 0.3784,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -8.9683,
+              "std": 0.2686,
+              "n": 10
+            },
+            "percent": {
+              "mean": -31.4634,
+              "std": 1.5551,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.1579,
+              "std": 0.0069,
+              "n": 10
+            },
+            "percent": {
+              "mean": -10.4994,
+              "std": 0.4862,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -21.329,
+              "std": 0.5689,
+              "n": 10
+            },
+            "percent": {
+              "mean": -14.6095,
+              "std": 0.5977,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -6.4975,
+              "std": 0.1903,
+              "n": 10
+            },
+            "percent": {
+              "mean": -10.6662,
+              "std": 0.3785,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -73.877,
+              "std": 2.1537,
+              "n": 10
+            },
+            "percent": {
+              "mean": -10.7162,
+              "std": 0.3801,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 4.982,
+              "std": 0.6071,
+              "n": 10
+            },
+            "percent": {
+              "mean": 23.5158,
+              "std": 3.6126,
+              "n": 10
+            }
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "difference": {
+              "mean": -3.6912,
+              "std": 0.3068,
+              "n": 10
+            },
+            "percent": {
+              "mean": -4.6321,
+              "std": 0.3987,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -3.5851,
+              "std": 0.2746,
+              "n": 10
+            },
+            "percent": {
+              "mean": -15.52,
+              "std": 1.5211,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.0627,
+              "std": 0.0059,
+              "n": 10
+            },
+            "percent": {
+              "mean": -4.4536,
+              "std": 0.4313,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -11.756,
+              "std": 0.6259,
+              "n": 10
+            },
+            "percent": {
+              "mean": -8.6176,
+              "std": 0.5308,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -2.643,
+              "std": 0.2196,
+              "n": 10
+            },
+            "percent": {
+              "mean": -4.6322,
+              "std": 0.3987,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -30.233,
+              "std": 2.4913,
+              "n": 10
+            },
+            "percent": {
+              "mean": -4.6823,
+              "std": 0.4002,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 10
+            },
+            "percent": {
+              "mean": null,
+              "std": null,
+              "n": 0
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 2.366,
+              "std": 0.5966,
+              "n": 10
+            },
+            "percent": {
+              "mean": 9.9689,
+              "std": 2.7953,
+              "n": 10
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spike_extreme",
+      "name": "Workload spike, extreme humid heat",
+      "climate": "extreme_heat",
+      "events": [
+        "workload_spike"
+      ],
+      "policies": {
+        "fixed": {
+          "totalKwh": {
+            "mean": 85.6145,
+            "std": 0.7821,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 29.0422,
+            "std": 0.1276,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.5135,
+            "std": 0.0071,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 143.859,
+            "std": 1.6494,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 61.2999,
+            "std": 0.56,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 693.547,
+            "std": 6.2781,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 6.622,
+            "std": 12.8699,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 2.2,
+            "std": 3.5839,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 26.238,
+            "std": 1.7803,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 3
+          },
+          "episodes": {
+            "mean": 0.3,
+            "std": 0.483,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "mean": 83.8734,
+            "std": 2.4252,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 27.301,
+            "std": 2.0794,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.4825,
+            "std": 0.0354,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 141.267,
+            "std": 1.2339,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 60.0534,
+            "std": 1.7362,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 679.463,
+            "std": 19.4577,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 17.516,
+            "std": 15.9746,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 5.2,
+            "std": 3.7947,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 28.098,
+            "std": 2.1732,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": 9.8024,
+            "std": 6.8705,
+            "n": 7
+          },
+          "episodes": {
+            "mean": 0.7,
+            "std": 0.483,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 0.0,
+            "std": 0.0,
+            "n": 10
+          }
+        },
+        "predictive": {
+          "totalKwh": {
+            "mean": 78.3913,
+            "std": 1.5646,
+            "n": 10
+          },
+          "coolingKwh": {
+            "mean": 22.7432,
+            "std": 0.9859,
+            "n": 10
+          },
+          "pue": {
+            "mean": 1.4087,
+            "std": 0.0171,
+            "n": 10
+          },
+          "waterL": {
+            "mean": 133.677,
+            "std": 2.8765,
+            "n": 10
+          },
+          "carbonKg": {
+            "mean": 56.1281,
+            "std": 1.1201,
+            "n": 10
+          },
+          "costInr": {
+            "mean": 635.152,
+            "std": 12.6357,
+            "n": 10
+          },
+          "minutesAboveLimit": {
+            "mean": 5.355,
+            "std": 10.0511,
+            "n": 10
+          },
+          "hotspotEvents": {
+            "mean": 1.6,
+            "std": 2.9515,
+            "n": 10
+          },
+          "peakInlet": {
+            "mean": 26.482,
+            "std": 0.963,
+            "n": 10
+          },
+          "leadTimeMin": {
+            "mean": 20.6944,
+            "std": 3.5953,
+            "n": 3
+          },
+          "episodes": {
+            "mean": 0.3,
+            "std": 0.483,
+            "n": 10
+          },
+          "alerts": {
+            "mean": 5.4,
+            "std": 1.075,
+            "n": 10
+          }
+        }
+      },
+      "savings": {
+        "fixed": {
+          "totalKwh": {
+            "difference": {
+              "mean": -7.2232,
+              "std": 1.1968,
+              "n": 10
+            },
+            "percent": {
+              "mean": -8.4399,
+              "std": 1.4135,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -6.299,
+              "std": 1.094,
+              "n": 10
+            },
+            "percent": {
+              "mean": -21.6767,
+              "std": 3.6755,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.1047,
+              "std": 0.0198,
+              "n": 10
+            },
+            "percent": {
+              "mean": -6.9165,
+              "std": 1.2904,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -10.182,
+              "std": 4.0769,
+              "n": 10
+            },
+            "percent": {
+              "mean": -7.0547,
+              "std": 2.7611,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -5.1718,
+              "std": 0.8566,
+              "n": 10
+            },
+            "percent": {
+              "mean": -8.4399,
+              "std": 1.413,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -58.395,
+              "std": 9.7993,
+              "n": 10
+            },
+            "percent": {
+              "mean": -8.4226,
+              "std": 1.4269,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": -1.267,
+              "std": 16.0706,
+              "n": 10
+            },
+            "percent": {
+              "mean": -2.4198,
+              "std": 148.4904,
+              "n": 3
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": -0.6,
+              "std": 4.2216,
+              "n": 10
+            },
+            "percent": {
+              "mean": -58.3333,
+              "std": 52.0416,
+              "n": 3
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": 0.244,
+              "std": 1.5952,
+              "n": 10
+            },
+            "percent": {
+              "mean": 1.2573,
+              "std": 6.2266,
+              "n": 10
+            }
+          }
+        },
+        "reactive": {
+          "totalKwh": {
+            "difference": {
+              "mean": -5.4821,
+              "std": 1.1521,
+              "n": 10
+            },
+            "percent": {
+              "mean": -6.5102,
+              "std": 1.2324,
+              "n": 10
+            }
+          },
+          "coolingKwh": {
+            "difference": {
+              "mean": -4.5578,
+              "std": 1.2693,
+              "n": 10
+            },
+            "percent": {
+              "mean": -16.4748,
+              "std": 3.5672,
+              "n": 10
+            }
+          },
+          "pue": {
+            "difference": {
+              "mean": -0.0738,
+              "std": 0.0234,
+              "n": 10
+            },
+            "percent": {
+              "mean": -4.9481,
+              "std": 1.4768,
+              "n": 10
+            }
+          },
+          "waterL": {
+            "difference": {
+              "mean": -7.59,
+              "std": 2.3188,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.3763,
+              "std": 1.6538,
+              "n": 10
+            }
+          },
+          "carbonKg": {
+            "difference": {
+              "mean": -3.9253,
+              "std": 0.8248,
+              "n": 10
+            },
+            "percent": {
+              "mean": -6.5104,
+              "std": 1.2322,
+              "n": 10
+            }
+          },
+          "costInr": {
+            "difference": {
+              "mean": -44.311,
+              "std": 9.1714,
+              "n": 10
+            },
+            "percent": {
+              "mean": -6.4964,
+              "std": 1.2105,
+              "n": 10
+            }
+          },
+          "minutesAboveLimit": {
+            "difference": {
+              "mean": -12.161,
+              "std": 15.5201,
+              "n": 10
+            },
+            "percent": {
+              "mean": -70.977,
+              "std": 44.7736,
+              "n": 7
+            }
+          },
+          "hotspotEvents": {
+            "difference": {
+              "mean": -3.6,
+              "std": 3.6271,
+              "n": 10
+            },
+            "percent": {
+              "mean": -71.4286,
+              "std": 41.9041,
+              "n": 7
+            }
+          },
+          "peakInlet": {
+            "difference": {
+              "mean": -1.616,
+              "std": 1.809,
+              "n": 10
+            },
+            "percent": {
+              "mean": -5.3643,
+              "std": 6.2035,
+              "n": 10
+            }
+          }
+        }
+      }
+    }
+  ],
+  "runs": [
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 100,
+      "totalKwh": 75.892,
+      "coolingKwh": 20.719,
+      "pue": 1.3755,
+      "waterL": 117.25,
+      "carbonKg": 54.339,
+      "costInr": 614.17,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.08,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 100,
+      "totalKwh": 70.859,
+      "coolingKwh": 15.686,
+      "pue": 1.2843,
+      "waterL": 108.86,
+      "carbonKg": 50.735,
+      "costInr": 573.41,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.28,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 100,
+      "totalKwh": 67.181,
+      "coolingKwh": 12.008,
+      "pue": 1.2176,
+      "waterL": 98.05,
+      "carbonKg": 48.102,
+      "costInr": 543.33,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.17,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 101,
+      "totalKwh": 74.085,
+      "coolingKwh": 20.926,
+      "pue": 1.3936,
+      "waterL": 116.06,
+      "carbonKg": 53.045,
+      "costInr": 599.65,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.03,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 101,
+      "totalKwh": 69.103,
+      "coolingKwh": 15.944,
+      "pue": 1.2999,
+      "waterL": 107.65,
+      "carbonKg": 49.478,
+      "costInr": 559.28,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.24,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 101,
+      "totalKwh": 65.282,
+      "coolingKwh": 12.123,
+      "pue": 1.228,
+      "waterL": 96.61,
+      "carbonKg": 46.742,
+      "costInr": 528.06,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.01,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 102,
+      "totalKwh": 73.205,
+      "coolingKwh": 20.485,
+      "pue": 1.3886,
+      "waterL": 114.09,
+      "carbonKg": 52.415,
+      "costInr": 592.48,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.04,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 102,
+      "totalKwh": 68.26,
+      "coolingKwh": 15.54,
+      "pue": 1.2948,
+      "waterL": 105.77,
+      "carbonKg": 48.874,
+      "costInr": 552.42,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.24,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 102,
+      "totalKwh": 64.81,
+      "coolingKwh": 12.091,
+      "pue": 1.2293,
+      "waterL": 96.68,
+      "carbonKg": 46.404,
+      "costInr": 524.28,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.39,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 103,
+      "totalKwh": 74.178,
+      "coolingKwh": 20.985,
+      "pue": 1.3945,
+      "waterL": 116.29,
+      "carbonKg": 53.112,
+      "costInr": 600.4,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.02,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 103,
+      "totalKwh": 69.191,
+      "coolingKwh": 15.999,
+      "pue": 1.3008,
+      "waterL": 107.87,
+      "carbonKg": 49.541,
+      "costInr": 560.0,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.23,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 103,
+      "totalKwh": 65.264,
+      "coolingKwh": 12.072,
+      "pue": 1.2269,
+      "waterL": 96.52,
+      "carbonKg": 46.729,
+      "costInr": 527.91,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.41,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 104,
+      "totalKwh": 72.107,
+      "coolingKwh": 19.497,
+      "pue": 1.3706,
+      "waterL": 110.56,
+      "carbonKg": 51.629,
+      "costInr": 583.49,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.02,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 104,
+      "totalKwh": 67.219,
+      "coolingKwh": 14.609,
+      "pue": 1.2777,
+      "waterL": 102.45,
+      "carbonKg": 48.129,
+      "costInr": 543.9,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.22,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 104,
+      "totalKwh": 63.372,
+      "coolingKwh": 10.762,
+      "pue": 1.2046,
+      "waterL": 91.45,
+      "carbonKg": 45.374,
+      "costInr": 512.46,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 24.95,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 105,
+      "totalKwh": 73.148,
+      "coolingKwh": 19.769,
+      "pue": 1.3704,
+      "waterL": 112.24,
+      "carbonKg": 52.374,
+      "costInr": 591.91,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.05,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 105,
+      "totalKwh": 68.221,
+      "coolingKwh": 14.842,
+      "pue": 1.2781,
+      "waterL": 104.07,
+      "carbonKg": 48.846,
+      "costInr": 552.01,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.25,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 105,
+      "totalKwh": 64.442,
+      "coolingKwh": 11.064,
+      "pue": 1.2073,
+      "waterL": 93.14,
+      "carbonKg": 46.14,
+      "costInr": 521.12,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.19,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 106,
+      "totalKwh": 75.385,
+      "coolingKwh": 20.954,
+      "pue": 1.385,
+      "waterL": 117.35,
+      "carbonKg": 53.976,
+      "costInr": 610.12,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.07,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 106,
+      "totalKwh": 70.363,
+      "coolingKwh": 15.932,
+      "pue": 1.2927,
+      "waterL": 108.92,
+      "carbonKg": 50.38,
+      "costInr": 569.44,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.27,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 106,
+      "totalKwh": 66.477,
+      "coolingKwh": 12.046,
+      "pue": 1.2213,
+      "waterL": 97.7,
+      "carbonKg": 47.598,
+      "costInr": 537.68,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.0,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 107,
+      "totalKwh": 73.597,
+      "coolingKwh": 20.571,
+      "pue": 1.3879,
+      "waterL": 114.68,
+      "carbonKg": 52.696,
+      "costInr": 595.66,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.05,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 107,
+      "totalKwh": 68.638,
+      "coolingKwh": 15.612,
+      "pue": 1.2944,
+      "waterL": 106.35,
+      "carbonKg": 49.145,
+      "costInr": 555.49,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.25,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 107,
+      "totalKwh": 64.988,
+      "coolingKwh": 11.961,
+      "pue": 1.2256,
+      "waterL": 95.61,
+      "carbonKg": 46.531,
+      "costInr": 525.64,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.17,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 108,
+      "totalKwh": 72.912,
+      "coolingKwh": 20.389,
+      "pue": 1.3882,
+      "waterL": 113.57,
+      "carbonKg": 52.205,
+      "costInr": 590.11,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.02,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 108,
+      "totalKwh": 67.978,
+      "coolingKwh": 15.455,
+      "pue": 1.2942,
+      "waterL": 105.27,
+      "carbonKg": 48.672,
+      "costInr": 550.14,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.22,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 108,
+      "totalKwh": 63.986,
+      "coolingKwh": 11.463,
+      "pue": 1.2182,
+      "waterL": 93.98,
+      "carbonKg": 45.814,
+      "costInr": 517.52,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.44,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "fixed",
+      "seed": 109,
+      "totalKwh": 72.755,
+      "coolingKwh": 19.529,
+      "pue": 1.3669,
+      "waterL": 111.27,
+      "carbonKg": 52.092,
+      "costInr": 588.71,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.03,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "reactive",
+      "seed": 109,
+      "totalKwh": 67.845,
+      "coolingKwh": 14.619,
+      "pue": 1.2747,
+      "waterL": 103.14,
+      "carbonKg": 48.577,
+      "costInr": 548.95,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.23,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "normal",
+      "policy": "predictive",
+      "seed": 109,
+      "totalKwh": 64.042,
+      "coolingKwh": 10.816,
+      "pue": 1.2032,
+      "waterL": 92.22,
+      "carbonKg": 45.854,
+      "costInr": 517.87,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.66,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 100,
+      "totalKwh": 79.36,
+      "coolingKwh": 24.187,
+      "pue": 1.4384,
+      "waterL": 129.7,
+      "carbonKg": 56.822,
+      "costInr": 642.67,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.08,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 100,
+      "totalKwh": 74.151,
+      "coolingKwh": 18.978,
+      "pue": 1.344,
+      "waterL": 120.61,
+      "carbonKg": 53.092,
+      "costInr": 600.44,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.28,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 100,
+      "totalKwh": 70.31,
+      "coolingKwh": 15.137,
+      "pue": 1.2744,
+      "waterL": 109.18,
+      "carbonKg": 50.342,
+      "costInr": 569.03,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.17,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 101,
+      "totalKwh": 77.399,
+      "coolingKwh": 24.239,
+      "pue": 1.456,
+      "waterL": 128.04,
+      "carbonKg": 55.417,
+      "costInr": 626.87,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.03,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 101,
+      "totalKwh": 72.241,
+      "coolingKwh": 19.082,
+      "pue": 1.3589,
+      "waterL": 118.94,
+      "carbonKg": 51.725,
+      "costInr": 585.06,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.24,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 101,
+      "totalKwh": 68.242,
+      "coolingKwh": 15.083,
+      "pue": 1.2837,
+      "waterL": 107.23,
+      "carbonKg": 48.861,
+      "costInr": 552.37,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.01,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 102,
+      "totalKwh": 76.469,
+      "coolingKwh": 23.749,
+      "pue": 1.4505,
+      "waterL": 125.86,
+      "carbonKg": 54.752,
+      "costInr": 619.3,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.04,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 102,
+      "totalKwh": 71.349,
+      "coolingKwh": 18.629,
+      "pue": 1.3534,
+      "waterL": 116.86,
+      "carbonKg": 51.086,
+      "costInr": 577.8,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.24,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 102,
+      "totalKwh": 67.453,
+      "coolingKwh": 14.734,
+      "pue": 1.2795,
+      "waterL": 105.34,
+      "carbonKg": 48.297,
+      "costInr": 545.95,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.38,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 103,
+      "totalKwh": 77.513,
+      "coolingKwh": 24.32,
+      "pue": 1.4572,
+      "waterL": 128.36,
+      "carbonKg": 55.499,
+      "costInr": 627.8,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.02,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 103,
+      "totalKwh": 72.35,
+      "coolingKwh": 19.157,
+      "pue": 1.3602,
+      "waterL": 119.24,
+      "carbonKg": 51.803,
+      "costInr": 585.96,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.23,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 103,
+      "totalKwh": 68.241,
+      "coolingKwh": 15.049,
+      "pue": 1.2829,
+      "waterL": 107.22,
+      "carbonKg": 48.861,
+      "costInr": 552.36,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.41,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 104,
+      "totalKwh": 75.383,
+      "coolingKwh": 22.773,
+      "pue": 1.4329,
+      "waterL": 122.22,
+      "carbonKg": 53.974,
+      "costInr": 610.39,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.02,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 104,
+      "totalKwh": 70.319,
+      "coolingKwh": 17.709,
+      "pue": 1.3366,
+      "waterL": 113.43,
+      "carbonKg": 50.349,
+      "costInr": 569.36,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.22,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 104,
+      "totalKwh": 66.292,
+      "coolingKwh": 13.682,
+      "pue": 1.2601,
+      "waterL": 101.76,
+      "carbonKg": 47.465,
+      "costInr": 536.44,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 24.95,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 105,
+      "totalKwh": 76.422,
+      "coolingKwh": 23.044,
+      "pue": 1.4317,
+      "waterL": 123.89,
+      "carbonKg": 54.718,
+      "costInr": 618.81,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.05,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 105,
+      "totalKwh": 71.32,
+      "coolingKwh": 17.942,
+      "pue": 1.3361,
+      "waterL": 115.03,
+      "carbonKg": 51.065,
+      "costInr": 577.46,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.25,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 105,
+      "totalKwh": 67.362,
+      "coolingKwh": 13.984,
+      "pue": 1.262,
+      "waterL": 103.46,
+      "carbonKg": 48.231,
+      "costInr": 545.1,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.19,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 106,
+      "totalKwh": 78.8,
+      "coolingKwh": 24.369,
+      "pue": 1.4477,
+      "waterL": 129.62,
+      "carbonKg": 56.42,
+      "costInr": 638.17,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.07,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 106,
+      "totalKwh": 73.601,
+      "coolingKwh": 19.17,
+      "pue": 1.3522,
+      "waterL": 120.5,
+      "carbonKg": 52.698,
+      "costInr": 596.04,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.27,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 106,
+      "totalKwh": 69.544,
+      "coolingKwh": 15.113,
+      "pue": 1.2777,
+      "waterL": 108.62,
+      "carbonKg": 49.794,
+      "costInr": 562.87,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.0,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 107,
+      "totalKwh": 76.89,
+      "coolingKwh": 23.864,
+      "pue": 1.45,
+      "waterL": 126.57,
+      "carbonKg": 55.053,
+      "costInr": 622.72,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.05,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 107,
+      "totalKwh": 71.756,
+      "coolingKwh": 18.729,
+      "pue": 1.3532,
+      "waterL": 117.55,
+      "carbonKg": 51.377,
+      "costInr": 581.1,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.25,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 107,
+      "totalKwh": 67.923,
+      "coolingKwh": 14.896,
+      "pue": 1.2809,
+      "waterL": 106.15,
+      "carbonKg": 48.633,
+      "costInr": 549.75,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.17,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 108,
+      "totalKwh": 76.146,
+      "coolingKwh": 23.623,
+      "pue": 1.4498,
+      "waterL": 125.24,
+      "carbonKg": 54.52,
+      "costInr": 616.68,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.02,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 108,
+      "totalKwh": 71.037,
+      "coolingKwh": 18.514,
+      "pue": 1.3525,
+      "waterL": 116.26,
+      "carbonKg": 50.863,
+      "costInr": 575.27,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.22,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 108,
+      "totalKwh": 66.855,
+      "coolingKwh": 14.332,
+      "pue": 1.2729,
+      "waterL": 104.26,
+      "carbonKg": 47.868,
+      "costInr": 541.1,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.44,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "fixed",
+      "seed": 109,
+      "totalKwh": 76.054,
+      "coolingKwh": 22.828,
+      "pue": 1.4289,
+      "waterL": 123.01,
+      "carbonKg": 54.454,
+      "costInr": 615.81,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 19.03,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "reactive",
+      "seed": 109,
+      "totalKwh": 70.969,
+      "coolingKwh": 17.743,
+      "pue": 1.3334,
+      "waterL": 114.2,
+      "carbonKg": 50.814,
+      "costInr": 574.6,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.23,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "heatwave",
+      "policy": "predictive",
+      "seed": 109,
+      "totalKwh": 67.012,
+      "coolingKwh": 13.786,
+      "pue": 1.259,
+      "waterL": 102.71,
+      "carbonKg": 47.98,
+      "costInr": 542.26,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.66,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 100,
+      "totalKwh": 76.093,
+      "coolingKwh": 20.92,
+      "pue": 1.3792,
+      "waterL": 116.56,
+      "carbonKg": 54.482,
+      "costInr": 615.74,
+      "minutesAboveLimit": 8.25,
+      "hotspotEvents": 8,
+      "peakInlet": 28.51,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 100,
+      "totalKwh": 76.548,
+      "coolingKwh": 21.375,
+      "pue": 1.3874,
+      "waterL": 116.65,
+      "carbonKg": 54.808,
+      "costInr": 619.38,
+      "minutesAboveLimit": 22.68,
+      "hotspotEvents": 8,
+      "peakInlet": 31.38,
+      "leadTimeMin": 1.1,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 100,
+      "totalKwh": 71.756,
+      "coolingKwh": 16.583,
+      "pue": 1.3006,
+      "waterL": 109.39,
+      "carbonKg": 51.377,
+      "costInr": 580.61,
+      "minutesAboveLimit": 23.35,
+      "hotspotEvents": 8,
+      "peakInlet": 32.21,
+      "leadTimeMin": 3.9166666666666665,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 101,
+      "totalKwh": 74.289,
+      "coolingKwh": 21.129,
+      "pue": 1.3975,
+      "waterL": 115.5,
+      "carbonKg": 53.191,
+      "costInr": 601.24,
+      "minutesAboveLimit": 6.3,
+      "hotspotEvents": 8,
+      "peakInlet": 28.3,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 101,
+      "totalKwh": 73.928,
+      "coolingKwh": 20.769,
+      "pue": 1.3907,
+      "waterL": 114.34,
+      "carbonKg": 52.933,
+      "costInr": 598.29,
+      "minutesAboveLimit": 18.62,
+      "hotspotEvents": 8,
+      "peakInlet": 31.23,
+      "leadTimeMin": 1.1333333333333333,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 101,
+      "totalKwh": 68.828,
+      "coolingKwh": 15.669,
+      "pue": 1.2947,
+      "waterL": 103.67,
+      "carbonKg": 49.281,
+      "costInr": 556.85,
+      "minutesAboveLimit": 19.78,
+      "hotspotEvents": 8,
+      "peakInlet": 32.01,
+      "leadTimeMin": 4.0,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 102,
+      "totalKwh": 73.352,
+      "coolingKwh": 20.632,
+      "pue": 1.3913,
+      "waterL": 113.38,
+      "carbonKg": 52.52,
+      "costInr": 593.62,
+      "minutesAboveLimit": 5.6,
+      "hotspotEvents": 8,
+      "peakInlet": 28.13,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 102,
+      "totalKwh": 72.778,
+      "coolingKwh": 20.058,
+      "pue": 1.3805,
+      "waterL": 111.88,
+      "carbonKg": 52.109,
+      "costInr": 588.93,
+      "minutesAboveLimit": 16.92,
+      "hotspotEvents": 8,
+      "peakInlet": 31.07,
+      "leadTimeMin": 1.0833333333333333,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 102,
+      "totalKwh": 67.936,
+      "coolingKwh": 15.217,
+      "pue": 1.2886,
+      "waterL": 101.69,
+      "carbonKg": 48.642,
+      "costInr": 549.59,
+      "minutesAboveLimit": 18.32,
+      "hotspotEvents": 8,
+      "peakInlet": 31.83,
+      "leadTimeMin": 4.0,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 103,
+      "totalKwh": 74.297,
+      "coolingKwh": 21.104,
+      "pue": 1.3968,
+      "waterL": 115.45,
+      "carbonKg": 53.197,
+      "costInr": 601.3,
+      "minutesAboveLimit": 5.85,
+      "hotspotEvents": 8,
+      "peakInlet": 28.17,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 103,
+      "totalKwh": 74.03,
+      "coolingKwh": 20.838,
+      "pue": 1.3917,
+      "waterL": 114.42,
+      "carbonKg": 53.006,
+      "costInr": 599.11,
+      "minutesAboveLimit": 18.55,
+      "hotspotEvents": 8,
+      "peakInlet": 31.11,
+      "leadTimeMin": 1.1166666666666667,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 103,
+      "totalKwh": 68.784,
+      "coolingKwh": 15.591,
+      "pue": 1.2931,
+      "waterL": 103.55,
+      "carbonKg": 49.249,
+      "costInr": 556.48,
+      "minutesAboveLimit": 19.87,
+      "hotspotEvents": 8,
+      "peakInlet": 31.87,
+      "leadTimeMin": 4.0,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 104,
+      "totalKwh": 72.313,
+      "coolingKwh": 19.703,
+      "pue": 1.3745,
+      "waterL": 110.05,
+      "carbonKg": 51.776,
+      "costInr": 585.1,
+      "minutesAboveLimit": 4.9,
+      "hotspotEvents": 8,
+      "peakInlet": 27.88,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 104,
+      "totalKwh": 71.781,
+      "coolingKwh": 19.171,
+      "pue": 1.3644,
+      "waterL": 108.63,
+      "carbonKg": 51.395,
+      "costInr": 580.77,
+      "minutesAboveLimit": 16.77,
+      "hotspotEvents": 8,
+      "peakInlet": 30.81,
+      "leadTimeMin": 1.1166666666666667,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 104,
+      "totalKwh": 66.942,
+      "coolingKwh": 14.332,
+      "pue": 1.2724,
+      "waterL": 98.55,
+      "carbonKg": 47.931,
+      "costInr": 541.45,
+      "minutesAboveLimit": 18.22,
+      "hotspotEvents": 8,
+      "peakInlet": 31.56,
+      "leadTimeMin": 4.166666666666667,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 105,
+      "totalKwh": 73.259,
+      "coolingKwh": 19.881,
+      "pue": 1.3724,
+      "waterL": 111.42,
+      "carbonKg": 52.453,
+      "costInr": 592.75,
+      "minutesAboveLimit": 5.25,
+      "hotspotEvents": 8,
+      "peakInlet": 28.07,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 105,
+      "totalKwh": 72.63,
+      "coolingKwh": 19.252,
+      "pue": 1.3607,
+      "waterL": 109.84,
+      "carbonKg": 52.003,
+      "costInr": 587.63,
+      "minutesAboveLimit": 16.43,
+      "hotspotEvents": 8,
+      "peakInlet": 31.01,
+      "leadTimeMin": 1.1833333333333333,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 105,
+      "totalKwh": 67.838,
+      "coolingKwh": 14.46,
+      "pue": 1.2709,
+      "waterL": 99.82,
+      "carbonKg": 48.572,
+      "costInr": 548.69,
+      "minutesAboveLimit": 17.92,
+      "hotspotEvents": 8,
+      "peakInlet": 31.77,
+      "leadTimeMin": 4.0,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 106,
+      "totalKwh": 75.471,
+      "coolingKwh": 21.04,
+      "pue": 1.3866,
+      "waterL": 116.3,
+      "carbonKg": 54.037,
+      "costInr": 610.75,
+      "minutesAboveLimit": 10.25,
+      "hotspotEvents": 8,
+      "peakInlet": 28.96,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 106,
+      "totalKwh": 75.797,
+      "coolingKwh": 21.366,
+      "pue": 1.3925,
+      "waterL": 116.2,
+      "carbonKg": 54.271,
+      "costInr": 613.35,
+      "minutesAboveLimit": 23.08,
+      "hotspotEvents": 8,
+      "peakInlet": 31.83,
+      "leadTimeMin": 1.1,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 106,
+      "totalKwh": 71.005,
+      "coolingKwh": 16.574,
+      "pue": 1.3045,
+      "waterL": 108.85,
+      "carbonKg": 50.84,
+      "costInr": 574.57,
+      "minutesAboveLimit": 23.65,
+      "hotspotEvents": 8,
+      "peakInlet": 32.66,
+      "leadTimeMin": 3.6666666666666665,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 107,
+      "totalKwh": 73.786,
+      "coolingKwh": 20.759,
+      "pue": 1.3915,
+      "waterL": 114.11,
+      "carbonKg": 52.831,
+      "costInr": 597.13,
+      "minutesAboveLimit": 5.15,
+      "hotspotEvents": 8,
+      "peakInlet": 27.96,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 107,
+      "totalKwh": 73.209,
+      "coolingKwh": 20.182,
+      "pue": 1.3806,
+      "waterL": 112.62,
+      "carbonKg": 52.418,
+      "costInr": 592.43,
+      "minutesAboveLimit": 17.0,
+      "hotspotEvents": 8,
+      "peakInlet": 30.9,
+      "leadTimeMin": 1.1333333333333333,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 107,
+      "totalKwh": 68.377,
+      "coolingKwh": 15.351,
+      "pue": 1.2895,
+      "waterL": 102.46,
+      "carbonKg": 48.958,
+      "costInr": 553.17,
+      "minutesAboveLimit": 18.37,
+      "hotspotEvents": 8,
+      "peakInlet": 31.66,
+      "leadTimeMin": 4.0,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 108,
+      "totalKwh": 73.066,
+      "coolingKwh": 20.543,
+      "pue": 1.3911,
+      "waterL": 112.88,
+      "carbonKg": 52.315,
+      "costInr": 591.3,
+      "minutesAboveLimit": 6.43,
+      "hotspotEvents": 8,
+      "peakInlet": 28.35,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 108,
+      "totalKwh": 72.507,
+      "coolingKwh": 19.985,
+      "pue": 1.3805,
+      "waterL": 111.41,
+      "carbonKg": 51.915,
+      "costInr": 586.74,
+      "minutesAboveLimit": 17.83,
+      "hotspotEvents": 8,
+      "peakInlet": 31.3,
+      "leadTimeMin": 1.1166666666666667,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 108,
+      "totalKwh": 67.61,
+      "coolingKwh": 15.087,
+      "pue": 1.2872,
+      "waterL": 101.14,
+      "carbonKg": 48.408,
+      "costInr": 546.95,
+      "minutesAboveLimit": 19.02,
+      "hotspotEvents": 8,
+      "peakInlet": 32.05,
+      "leadTimeMin": 3.8333333333333335,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "fixed",
+      "seed": 109,
+      "totalKwh": 72.963,
+      "coolingKwh": 19.737,
+      "pue": 1.3708,
+      "waterL": 110.73,
+      "carbonKg": 52.241,
+      "costInr": 590.35,
+      "minutesAboveLimit": 6.67,
+      "hotspotEvents": 8,
+      "peakInlet": 28.37,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "reactive",
+      "seed": 109,
+      "totalKwh": 72.642,
+      "coolingKwh": 19.416,
+      "pue": 1.3648,
+      "waterL": 109.64,
+      "carbonKg": 52.012,
+      "costInr": 587.71,
+      "minutesAboveLimit": 18.57,
+      "hotspotEvents": 8,
+      "peakInlet": 31.27,
+      "leadTimeMin": 1.1166666666666667,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "cooling_failure",
+      "policy": "predictive",
+      "seed": 109,
+      "totalKwh": 67.598,
+      "coolingKwh": 14.372,
+      "pue": 1.27,
+      "waterL": 99.3,
+      "carbonKg": 48.4,
+      "costInr": 546.74,
+      "minutesAboveLimit": 19.62,
+      "hotspotEvents": 8,
+      "peakInlet": 32.08,
+      "leadTimeMin": 4.0,
+      "episodes": 1,
+      "alerts": 1
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 100,
+      "totalKwh": 87.211,
+      "coolingKwh": 28.908,
+      "pue": 1.4958,
+      "waterL": 148.73,
+      "carbonKg": 62.443,
+      "costInr": 706.62,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 21.55,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 100,
+      "totalKwh": 81.86,
+      "coolingKwh": 23.557,
+      "pue": 1.404,
+      "waterL": 139.63,
+      "carbonKg": 58.611,
+      "costInr": 663.25,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 24.18,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 100,
+      "totalKwh": 77.864,
+      "coolingKwh": 20.207,
+      "pue": 1.3505,
+      "waterL": 127.48,
+      "carbonKg": 55.751,
+      "costInr": 630.56,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.42,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 1
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 101,
+      "totalKwh": 85.333,
+      "coolingKwh": 28.9,
+      "pue": 1.5121,
+      "waterL": 146.85,
+      "carbonKg": 61.098,
+      "costInr": 691.47,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 21.61,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 101,
+      "totalKwh": 80.173,
+      "coolingKwh": 23.74,
+      "pue": 1.4207,
+      "waterL": 138.59,
+      "carbonKg": 57.404,
+      "costInr": 649.7,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 24.24,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 101,
+      "totalKwh": 76.12,
+      "coolingKwh": 20.02,
+      "pue": 1.3569,
+      "waterL": 126.03,
+      "carbonKg": 54.502,
+      "costInr": 616.52,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.35,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 1
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 102,
+      "totalKwh": 84.772,
+      "coolingKwh": 28.712,
+      "pue": 1.5122,
+      "waterL": 146.45,
+      "carbonKg": 60.697,
+      "costInr": 686.96,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 21.37,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 102,
+      "totalKwh": 79.341,
+      "coolingKwh": 23.282,
+      "pue": 1.4153,
+      "waterL": 136.53,
+      "carbonKg": 56.808,
+      "costInr": 642.92,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 23.99,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 102,
+      "totalKwh": 75.913,
+      "coolingKwh": 19.937,
+      "pue": 1.3562,
+      "waterL": 125.79,
+      "carbonKg": 54.354,
+      "costInr": 614.85,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.26,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 1
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 103,
+      "totalKwh": 85.684,
+      "coolingKwh": 29.191,
+      "pue": 1.5167,
+      "waterL": 148.38,
+      "carbonKg": 61.35,
+      "costInr": 694.38,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 21.87,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 103,
+      "totalKwh": 80.318,
+      "coolingKwh": 23.825,
+      "pue": 1.4217,
+      "waterL": 138.95,
+      "carbonKg": 57.508,
+      "costInr": 650.88,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 24.49,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 103,
+      "totalKwh": 76.843,
+      "coolingKwh": 20.349,
+      "pue": 1.3602,
+      "waterL": 127.47,
+      "carbonKg": 55.019,
+      "costInr": 622.39,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.12,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 104,
+      "totalKwh": 83.546,
+      "coolingKwh": 27.574,
+      "pue": 1.4927,
+      "waterL": 142.15,
+      "carbonKg": 59.819,
+      "costInr": 676.89,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 20.3,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 104,
+      "totalKwh": 78.158,
+      "coolingKwh": 22.187,
+      "pue": 1.3964,
+      "waterL": 132.39,
+      "carbonKg": 55.961,
+      "costInr": 633.21,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.93,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 104,
+      "totalKwh": 74.289,
+      "coolingKwh": 18.318,
+      "pue": 1.3273,
+      "waterL": 120.24,
+      "carbonKg": 53.191,
+      "costInr": 601.53,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.19,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 105,
+      "totalKwh": 84.718,
+      "coolingKwh": 27.959,
+      "pue": 1.4926,
+      "waterL": 144.25,
+      "carbonKg": 60.658,
+      "costInr": 686.4,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 20.65,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 105,
+      "totalKwh": 79.298,
+      "coolingKwh": 22.54,
+      "pue": 1.3971,
+      "waterL": 134.45,
+      "carbonKg": 56.778,
+      "costInr": 642.45,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 23.27,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 105,
+      "totalKwh": 75.449,
+      "coolingKwh": 18.69,
+      "pue": 1.3293,
+      "waterL": 122.37,
+      "carbonKg": 54.021,
+      "costInr": 610.93,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.2,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 106,
+      "totalKwh": 86.615,
+      "coolingKwh": 29.177,
+      "pue": 1.508,
+      "waterL": 149.22,
+      "carbonKg": 62.016,
+      "costInr": 701.87,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.41,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 106,
+      "totalKwh": 81.156,
+      "coolingKwh": 23.718,
+      "pue": 1.4129,
+      "waterL": 139.39,
+      "carbonKg": 58.108,
+      "costInr": 657.61,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 24.97,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 106,
+      "totalKwh": 78.089,
+      "coolingKwh": 20.651,
+      "pue": 1.3595,
+      "waterL": 128.68,
+      "carbonKg": 55.912,
+      "costInr": 632.44,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.73,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 107,
+      "totalKwh": 84.964,
+      "coolingKwh": 28.772,
+      "pue": 1.512,
+      "waterL": 146.79,
+      "carbonKg": 60.834,
+      "costInr": 688.52,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 21.16,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 107,
+      "totalKwh": 79.522,
+      "coolingKwh": 23.33,
+      "pue": 1.4152,
+      "waterL": 136.84,
+      "carbonKg": 56.938,
+      "costInr": 644.38,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 23.78,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 107,
+      "totalKwh": 75.729,
+      "coolingKwh": 19.537,
+      "pue": 1.3477,
+      "waterL": 124.78,
+      "carbonKg": 54.222,
+      "costInr": 613.32,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.74,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 108,
+      "totalKwh": 84.374,
+      "coolingKwh": 28.567,
+      "pue": 1.5119,
+      "waterL": 145.69,
+      "carbonKg": 60.412,
+      "costInr": 683.73,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 21.5,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 108,
+      "totalKwh": 78.951,
+      "coolingKwh": 23.144,
+      "pue": 1.4147,
+      "waterL": 135.77,
+      "carbonKg": 56.529,
+      "costInr": 639.75,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 24.1,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 108,
+      "totalKwh": 75.419,
+      "coolingKwh": 19.613,
+      "pue": 1.3514,
+      "waterL": 124.24,
+      "carbonKg": 54.0,
+      "costInr": 610.81,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.29,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "fixed",
+      "seed": 109,
+      "totalKwh": 83.805,
+      "coolingKwh": 27.537,
+      "pue": 1.4894,
+      "waterL": 142.26,
+      "carbonKg": 60.005,
+      "costInr": 678.98,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 20.33,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "reactive",
+      "seed": 109,
+      "totalKwh": 78.41,
+      "coolingKwh": 22.142,
+      "pue": 1.3935,
+      "waterL": 132.5,
+      "carbonKg": 56.142,
+      "costInr": 635.23,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 22.96,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_humid",
+      "policy": "predictive",
+      "seed": 109,
+      "totalKwh": 74.56,
+      "coolingKwh": 18.292,
+      "pue": 1.3251,
+      "waterL": 120.4,
+      "carbonKg": 53.385,
+      "costInr": 603.7,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.27,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 100,
+      "totalKwh": 87.399,
+      "coolingKwh": 29.096,
+      "pue": 1.4991,
+      "waterL": 144.49,
+      "carbonKg": 62.578,
+      "costInr": 707.86,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.75,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 100,
+      "totalKwh": 86.961,
+      "coolingKwh": 28.658,
+      "pue": 1.4915,
+      "waterL": 142.88,
+      "carbonKg": 62.264,
+      "costInr": 704.26,
+      "minutesAboveLimit": 26.37,
+      "hotspotEvents": 8,
+      "peakInlet": 29.68,
+      "leadTimeMin": 9.65,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 100,
+      "totalKwh": 80.95,
+      "coolingKwh": 23.092,
+      "pue": 1.3991,
+      "waterL": 133.62,
+      "carbonKg": 57.96,
+      "costInr": 655.62,
+      "minutesAboveLimit": 29.98,
+      "hotspotEvents": 8,
+      "peakInlet": 28.44,
+      "leadTimeMin": 16.583333333333332,
+      "episodes": 1,
+      "alerts": 5
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 101,
+      "totalKwh": 85.317,
+      "coolingKwh": 28.885,
+      "pue": 1.5118,
+      "waterL": 141.99,
+      "carbonKg": 61.087,
+      "costInr": 691.06,
+      "minutesAboveLimit": 5.55,
+      "hotspotEvents": 6,
+      "peakInlet": 27.59,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 101,
+      "totalKwh": 84.93,
+      "coolingKwh": 28.497,
+      "pue": 1.505,
+      "waterL": 140.62,
+      "carbonKg": 60.81,
+      "costInr": 687.88,
+      "minutesAboveLimit": 22.22,
+      "hotspotEvents": 8,
+      "peakInlet": 29.88,
+      "leadTimeMin": 13.916666666666666,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 101,
+      "totalKwh": 78.199,
+      "coolingKwh": 22.863,
+      "pue": 1.4132,
+      "waterL": 130.75,
+      "carbonKg": 55.991,
+      "costInr": 633.44,
+      "minutesAboveLimit": 14.9,
+      "hotspotEvents": 6,
+      "peakInlet": 27.77,
+      "leadTimeMin": 22.25,
+      "episodes": 1,
+      "alerts": 6
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 102,
+      "totalKwh": 85.042,
+      "coolingKwh": 28.982,
+      "pue": 1.517,
+      "waterL": 143.01,
+      "carbonKg": 60.89,
+      "costInr": 688.91,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.15,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 102,
+      "totalKwh": 84.561,
+      "coolingKwh": 28.501,
+      "pue": 1.5084,
+      "waterL": 141.48,
+      "carbonKg": 60.545,
+      "costInr": 684.98,
+      "minutesAboveLimit": 12.5,
+      "hotspotEvents": 8,
+      "peakInlet": 28.56,
+      "leadTimeMin": 22.733333333333334,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 102,
+      "totalKwh": 78.104,
+      "coolingKwh": 23.388,
+      "pue": 1.4274,
+      "waterL": 133.77,
+      "carbonKg": 55.922,
+      "costInr": 632.86,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.08,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 5
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 103,
+      "totalKwh": 85.372,
+      "coolingKwh": 28.879,
+      "pue": 1.5112,
+      "waterL": 141.83,
+      "carbonKg": 61.126,
+      "costInr": 691.48,
+      "minutesAboveLimit": 24.95,
+      "hotspotEvents": 8,
+      "peakInlet": 28.37,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 103,
+      "totalKwh": 85.513,
+      "coolingKwh": 29.02,
+      "pue": 1.5137,
+      "waterL": 141.31,
+      "carbonKg": 61.227,
+      "costInr": 692.58,
+      "minutesAboveLimit": 36.0,
+      "hotspotEvents": 8,
+      "peakInlet": 30.42,
+      "leadTimeMin": 3.9,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 103,
+      "totalKwh": 79.29,
+      "coolingKwh": 23.574,
+      "pue": 1.4231,
+      "waterL": 137.46,
+      "carbonKg": 56.771,
+      "costInr": 642.57,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.93,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 6
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 104,
+      "totalKwh": 85.171,
+      "coolingKwh": 29.199,
+      "pue": 1.5217,
+      "waterL": 145.93,
+      "carbonKg": 60.982,
+      "costInr": 690.12,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 23.2,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 104,
+      "totalKwh": 80.404,
+      "coolingKwh": 24.433,
+      "pue": 1.4365,
+      "waterL": 139.65,
+      "carbonKg": 57.57,
+      "costInr": 651.61,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.05,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 104,
+      "totalKwh": 76.186,
+      "coolingKwh": 21.109,
+      "pue": 1.3833,
+      "waterL": 129.77,
+      "carbonKg": 54.549,
+      "costInr": 617.27,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.61,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 4
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 105,
+      "totalKwh": 85.948,
+      "coolingKwh": 29.189,
+      "pue": 1.5143,
+      "waterL": 145.76,
+      "carbonKg": 61.538,
+      "costInr": 696.33,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 24.86,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 105,
+      "totalKwh": 81.427,
+      "coolingKwh": 24.668,
+      "pue": 1.4346,
+      "waterL": 140.96,
+      "carbonKg": 58.302,
+      "costInr": 659.87,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.62,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 105,
+      "totalKwh": 76.867,
+      "coolingKwh": 21.609,
+      "pue": 1.3911,
+      "waterL": 131.54,
+      "carbonKg": 55.037,
+      "costInr": 622.83,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.78,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 5
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 106,
+      "totalKwh": 86.429,
+      "coolingKwh": 28.991,
+      "pue": 1.5047,
+      "waterL": 143.12,
+      "carbonKg": 61.883,
+      "costInr": 700.02,
+      "minutesAboveLimit": 35.72,
+      "hotspotEvents": 8,
+      "peakInlet": 28.43,
+      "leadTimeMin": 0.0,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 106,
+      "totalKwh": 86.838,
+      "coolingKwh": 29.399,
+      "pue": 1.5118,
+      "waterL": 142.85,
+      "carbonKg": 62.176,
+      "costInr": 703.27,
+      "minutesAboveLimit": 38.68,
+      "hotspotEvents": 8,
+      "peakInlet": 30.58,
+      "leadTimeMin": 3.533333333333333,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 106,
+      "totalKwh": 80.77,
+      "coolingKwh": 24.016,
+      "pue": 1.4232,
+      "waterL": 137.67,
+      "carbonKg": 57.831,
+      "costInr": 654.42,
+      "minutesAboveLimit": 8.67,
+      "hotspotEvents": 2,
+      "peakInlet": 27.13,
+      "leadTimeMin": 23.25,
+      "episodes": 1,
+      "alerts": 7
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 107,
+      "totalKwh": 85.174,
+      "coolingKwh": 28.983,
+      "pue": 1.5158,
+      "waterL": 143.02,
+      "carbonKg": 60.985,
+      "costInr": 689.98,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.59,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 107,
+      "totalKwh": 82.341,
+      "coolingKwh": 26.149,
+      "pue": 1.4653,
+      "waterL": 139.33,
+      "carbonKg": 58.956,
+      "costInr": 667.09,
+      "minutesAboveLimit": 4.67,
+      "hotspotEvents": 4,
+      "peakInlet": 27.48,
+      "leadTimeMin": 10.066666666666666,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 107,
+      "totalKwh": 78.148,
+      "coolingKwh": 23.224,
+      "pue": 1.4228,
+      "waterL": 133.72,
+      "carbonKg": 55.954,
+      "costInr": 633.21,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.12,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 7
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 108,
+      "totalKwh": 84.799,
+      "coolingKwh": 28.992,
+      "pue": 1.5195,
+      "waterL": 143.12,
+      "carbonKg": 60.716,
+      "costInr": 686.98,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.59,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 108,
+      "totalKwh": 84.878,
+      "coolingKwh": 29.072,
+      "pue": 1.5209,
+      "waterL": 142.54,
+      "carbonKg": 60.773,
+      "costInr": 687.58,
+      "minutesAboveLimit": 34.72,
+      "hotspotEvents": 8,
+      "peakInlet": 28.61,
+      "leadTimeMin": 4.816666666666666,
+      "episodes": 1,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 108,
+      "totalKwh": 78.289,
+      "coolingKwh": 23.074,
+      "pue": 1.4179,
+      "waterL": 136.99,
+      "carbonKg": 56.055,
+      "costInr": 634.53,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.78,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 5
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "fixed",
+      "seed": 109,
+      "totalKwh": 85.494,
+      "coolingKwh": 29.226,
+      "pue": 1.5194,
+      "waterL": 146.32,
+      "carbonKg": 61.214,
+      "costInr": 692.73,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 23.85,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "reactive",
+      "seed": 109,
+      "totalKwh": 80.881,
+      "coolingKwh": 24.613,
+      "pue": 1.4374,
+      "waterL": 141.05,
+      "carbonKg": 57.911,
+      "costInr": 655.51,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 25.1,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 0
+    },
+    {
+      "scenario": "spike_extreme",
+      "policy": "predictive",
+      "seed": 109,
+      "totalKwh": 77.11,
+      "coolingKwh": 21.483,
+      "pue": 1.3862,
+      "waterL": 131.48,
+      "carbonKg": 55.211,
+      "costInr": 624.77,
+      "minutesAboveLimit": 0.0,
+      "hotspotEvents": 0,
+      "peakInlet": 26.18,
+      "leadTimeMin": null,
+      "episodes": 0,
+      "alerts": 4
+    }
+  ],
+  "method": "Each scenario was simulated for every seed under all three policies with identical weather, workload and events. Values are mean and sample standard deviation across seeds; savings are paired differences (predictive minus baseline) for the same seed."
+}

@@ -9,6 +9,15 @@ from typing import Set
 from fastapi import WebSocket
 
 
+def _to_builtin(obj):
+    """Convert numpy scalars and arrays that may appear in simulation state."""
+    if hasattr(obj, "item"):
+        return obj.item()
+    if hasattr(obj, "tolist"):
+        return obj.tolist()
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
+
 class WSConnectionManager:
     def __init__(self):
         self.active: Set[WebSocket] = set()
@@ -24,7 +33,7 @@ class WSConnectionManager:
         """Send JSON payload to all connected WebSocket clients."""
         if not self.active:
             return
-        payload = json.dumps(data)
+        payload = json.dumps(data, default=_to_builtin)
         dead = set()
         for ws in self.active:
             try:

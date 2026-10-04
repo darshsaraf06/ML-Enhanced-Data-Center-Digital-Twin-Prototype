@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   datacenter-twin:
     build:
@@ -10,12 +8,7 @@ services:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/app/backend
     volumes:
-      - ./backend/datacenter_twin.db:/app/backend/datacenter_twin.db
+      # saved runs (View Past Logs), dataset, benchmark results
+      - ./backend/data:/app/backend/data
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
